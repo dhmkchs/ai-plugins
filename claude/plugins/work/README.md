@@ -29,6 +29,8 @@
 
 | 명령 | 하는 일 |
 |---|---|
+| `/work:setting` | 설정 잡기. 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값은 `.work/config.json`, 토큰은 셸 env |
+| `/work:host` | OS별 시스템 hosts 파일 조회·수정 (백업 → diff → 승인). 로컬 도메인 매핑 |
 | `/work:ticket` | Jira 티켓 생성. 중복 확인 → 4요소(문제·영향·완료조건·범위밖) → 필드 조회 → 승인 후 생성 |
 | `/work:plan` | 티켓 읽기 → 코드베이스 정찰 → 요구사항 표 → 수직 슬라이스 → 플랜 파일 |
 | `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 커밋+플랜 갱신 |
@@ -74,13 +76,14 @@ planned → in-progress → review → pr-open → done
 |---|---|
 | `ticket` · `plan` · Jira 전이 | **Atlassian MCP 서버** (Rovo). 없으면 해당 단계에서 멈추고 알린다 |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
-| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 |
+| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`/work:setting`으로 안내) |
 | `browser` | `npm i -D playwright` + `npx playwright install chromium` |
 
-**토큰을 `.work/config.json`에 쓰지 않는다.** 그 파일은 커밋된다. 환경변수로 둔다.
+**토큰을 config 파일에 쓰지 않는다.** 글로벌·프로젝트 config 모두 커밋될 수 있다. 환경변수로 둔다.
 
-저장소별 기본값은 `.work/config.json`에 둘 수 있다 (프로젝트 키, 브랜치 prefix, base, 리뷰어).
-형식은 `skills/plan/references/plan-format.md` 마지막 절 참고.
+설정은 `/work:setting`으로 잡는다. 회사 공통값(host·branchPrefix·이슈타입·전이명·리뷰어)은 **글로벌 `~/.work/config.json`**에
+한 번만, repo 고유값(projectKey·owner·repo·base)만 **프로젝트 `.work/config.json`**에 둔다 — 후자는 대부분 자동 감지된다.
+병합 순서는 프로젝트 > 글로벌 > env > 감지 > 질문. 형식은 `skills/plan/references/plan-format.md` 마지막 절 참고.
 
 ## 설치
 

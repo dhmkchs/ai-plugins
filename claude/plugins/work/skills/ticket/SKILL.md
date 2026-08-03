@@ -92,7 +92,7 @@ getJiraProjectIssueTypesMetadata      해당 프로젝트의 이슈 타입 (Bug/
 getJiraIssueTypeMetaWithFields        필수 필드와 허용값 (커스텀 필드가 있는 팀이 많다)
 ```
 
-`.work/config.json`에 기본값이 있으면 그것을 쓰되, 첫 사용이면 조회 결과로 확인받고 저장한다.
+config에 기본값(`jira.projectKey`·`jira.defaultIssueType`)이 있으면 그것을 쓰되(프로젝트 `.work/config.json` > 글로벌 `~/.work/config.json`), 첫 사용이면 조회 결과로 확인받고 `/work:setting`으로 저장한다.
 
 ```json
 { "jira": { "projectKey": "PROJ", "defaultIssueType": "Task" } }

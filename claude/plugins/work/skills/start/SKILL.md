@@ -44,7 +44,7 @@ git switch -c feature/PROJ-123-duplicate-email origin/main
 git config branch.feature/PROJ-123-duplicate-email.base main
 ```
 
-브랜치명은 `<branchPrefix><TICKET>-<제목-슬러그>`. `.work/config.json`의 `branchPrefix`·`base`를 따른다.
+브랜치명은 `<branchPrefix><TICKET>-<제목-슬러그>`. config의 `branchPrefix`·`base`를 따른다 (프로젝트 `.work/config.json` > 글로벌 `~/.work/config.json`).
 브랜치가 이미 있으면 새로 만들지 말고 체크아웃한다.
 
 **base 기록을 빠뜨리지 않는다.** `develop`에서 딴 브랜치를 나중에 `main` 기준으로 diff하면

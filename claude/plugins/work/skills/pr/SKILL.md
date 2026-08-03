@@ -48,7 +48,7 @@ git remote get-url origin
 | `bitbucket.org` | Bitbucket Cloud | Atlassian MCP `bitbucketPullRequest` |
 | 그 외 자체 호스팅 | Forgejo (또는 Gitea) | REST API + 토큰 |
 
-`.work/config.json`의 `git.host`가 있으면 그것을 우선한다. 애매하면 **묻는다. 추측해서 올리지 않는다.**
+config의 `git.host`가 있으면 그것을 우선한다 (프로젝트 `.work/config.json` > 글로벌 `~/.work/config.json`). 애매하면 **묻는다. 추측해서 올리지 않는다.**
 
 remote URL에서 `owner`/`repo`를 파싱한다. SSH(`git@host:owner/repo.git`)와 HTTPS 둘 다 처리한다.
 

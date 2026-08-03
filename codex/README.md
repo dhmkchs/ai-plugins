@@ -4,11 +4,13 @@
 Codex CLI/IDE에서 쓸 수 있게 스킬로 포장했다.
 
 Codex는 마켓플레이스가 아니라 **`.agents/skills/` 폴더**에서 스킬을 읽는다.
-여기 `codex/skills/`에 든 13개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
+여기 `codex/skills/`에 든 15개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
 
 ```
 codex/
 └── skills/
+    ├── setting/SKILL.md
+    ├── host/SKILL.md
     ├── ticket/SKILL.md
     ├── plan/SKILL.md
     ├── start/SKILL.md

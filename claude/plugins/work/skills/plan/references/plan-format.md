@@ -146,9 +146,26 @@ planned ──start──> in-progress ──모든 슬라이스 완료──> r
 
 이 로그가 나중에 PR 설명의 "왜 이렇게 했나"가 되고, 중단된 작업을 남이 이어받는 근거가 된다.
 
-## `.work/config.json` (선택)
+## config (선택) — 글로벌 + 프로젝트 레이어
 
-저장소별 기본값. 없으면 매번 감지·질문한다.
+설정은 세 곳에 나뉜다. `/work:setting`으로 잡는다.
+
+| 어디 | 무엇 |
+|---|---|
+| 셸 env (`~/.zshrc`) | `FORGEJO_TOKEN`, `FORGEJO_URL` — 비밀. 전 프로젝트 공통 |
+| 글로벌 `~/.work/config.json` | 회사 공통값: `git.host`·`git.forgejoUrl`·`git.branchPrefix`, `jira.defaultIssueType`·전이명, `pr.reviewers`·`pr.draft` |
+| 프로젝트 `.work/config.json` | repo 고유값: `jira.projectKey`, `git.owner`·`git.repo`·`git.base` |
+
+**병합 순서: 프로젝트 > 글로벌 > env > 감지 > 질문.** 두 config 파일은 같은 스키마이고,
+프로젝트 값이 글로벌을 덮어쓴다. 설정을 읽을 때 글로벌을 먼저 읽고 프로젝트로 덮는다.
+
+```bash
+# 병합 (프로젝트가 글로벌을 덮어쓴다). 둘 중 하나만 있어도 동작한다.
+CFG=$(jq -s '.[0] * .[1]' <(cat ~/.work/config.json 2>/dev/null || echo '{}') \
+                          <(cat .work/config.json 2>/dev/null || echo '{}'))
+```
+
+전체 스키마 (어느 파일이든 이 모양의 부분집합):
 
 ```json
 {
@@ -173,4 +190,6 @@ planned ──start──> in-progress ──모든 슬라이스 완료──> r
 }
 ```
 
-**토큰은 여기 쓰지 않는다.** 환경변수(`FORGEJO_TOKEN`)로 둔다. 이 파일은 커밋된다.
+값이 감지 가능하면(owner/repo/base는 git remote에서) config에 안 써도 된다. 없으면 매번 감지·질문한다.
+
+**토큰은 어느 파일에도 쓰지 않는다.** 환경변수(`FORGEJO_TOKEN`)로 둔다. 두 config 파일 모두 커밋될 수 있다.

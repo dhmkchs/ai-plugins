@@ -31,17 +31,21 @@ codex/
 
 ## 설치
 
-Codex는 아래 위치의 `.agents/skills/`를 CWD에서 저장소 루트까지, 그리고 홈 디렉터리에서 스캔한다.
+Codex는 `.agents/skills/`를 CWD에서 저장소 루트까지, **그리고 홈(`~/.agents/skills/`)** 에서 스캔한다.
+**홈에 두면 그게 곧 글로벌** — repo마다 복사할 필요가 없다. 심볼릭 링크로 걸면 `git pull` 시 자동 갱신된다.
 
 ```bash
-# 개인 — 모든 프로젝트에서 (홈)
+# 개인 — 모든 프로젝트에서 (홈 = 글로벌). 링크라 git pull로 자동 갱신
 mkdir -p ~/.agents/skills
-cp -R codex/skills/* ~/.agents/skills/
+ln -sfn "$PWD/codex/skills"/* ~/.agents/skills/     # 저장소를 고정 위치에 둘 때
+# 또는 복사 (갱신 수동):  cp -R codex/skills/* ~/.agents/skills/
 
 # 프로젝트 — 이 프로젝트에서만 (팀과 커밋으로 공유)
 mkdir -p .agents/skills
 cp -R codex/skills/* .agents/skills/
 ```
+
+> 한 번 링크해두면 `setting`을 포함한 전 스킬이 모든 프로젝트에서 뜬다. 이후 `$setting`으로 스킬 갱신·재설치를 도울 수 있다.
 
 확인:
 
@@ -88,6 +92,8 @@ $ticket → $plan → $start → $review → $pr → $cleanup
 
 | 스킬 | 하는 일 |
 |---|---|
+| `setting` | 설정 잡기. 글로벌 `~/.work/config.json` · 프로젝트 `.work/config.json` · 셸 env 토큰 |
+| `host` | OS별 시스템 hosts 파일 조회·수정 (백업 → diff → 승인) |
 | `ticket` | 대화 → Jira 티켓 (중복 확인 · 필드 조회) |
 | `plan` | 티켓 → 코드베이스 정찰 → 슬라이스 플랜 파일 |
 | `start` | 슬라이스 실행 (커밋마다 플랜 갱신 · 재개 가능) |
@@ -110,10 +116,11 @@ $ticket → $plan → $start → $review → $pr → $cleanup
 |---|---|
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Codex `mcp` 설정에 등록) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
-| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 |
+| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`setting` 스킬로 안내) |
 | `browser` | `npm i -D playwright` + `npx playwright install chromium` |
 
-> **토큰을 `.work/config.json`에 쓰지 않는다.** 그 파일은 커밋된다. 환경변수로 둔다.
+> **설정은 `setting` 스킬로 잡는다.** 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값만 프로젝트 `.work/config.json`.
+> **토큰은 어느 config 파일에도 쓰지 않는다.** 두 파일 다 커밋될 수 있다. 환경변수로 둔다.
 
 ---
 

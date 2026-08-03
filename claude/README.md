@@ -133,10 +133,12 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 
 **플랜 파일(`.work/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 
-### 전체 명령 (13종)
+### 전체 명령 (15종)
 
 | 명령 | 하는 일 |
 |---|---|
+| `/work:setting` | 설정 잡기. 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값은 `.work/config.json`, 토큰은 셸 env |
+| `/work:host` | OS별 시스템 hosts 파일 조회·수정 (백업 → diff → 승인). 로컬 도메인 매핑 |
 | `/work:ticket` | Jira 티켓 생성. 중복 확인 → 4요소(문제·영향·완료조건·범위밖) → 필드 조회 → 승인 후 생성 |
 | `/work:plan` | 티켓 읽기 → 코드베이스 정찰 → 요구사항 표 → 수직 슬라이스 → 플랜 파일 |
 | `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 커밋+플랜 갱신 |
@@ -159,10 +161,12 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 |---|---|
 | `ticket` · `plan` · Jira 전이 | **Atlassian MCP 서버** (Rovo) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
-| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 |
+| `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`/work:setting`으로 안내) |
 | `browser` | `npm i -D playwright` + `npx playwright install chromium` |
 
-> **토큰을 `.work/config.json`에 쓰지 않는다.** 그 파일은 커밋된다. 환경변수로 둔다.
+> **설정은 `/work:setting`으로 잡는다.** 회사 공통값(host·prefix·리뷰어·전이명)은 글로벌 `~/.work/config.json`에 한 번,
+> repo 고유값(projectKey·owner·repo·base)만 프로젝트 `.work/config.json`에 — 대부분 git remote에서 자동 감지된다.
+> **토큰은 어느 config 파일에도 쓰지 않는다.** 두 파일 다 커밋될 수 있다. 환경변수로 둔다.
 
 ---
 

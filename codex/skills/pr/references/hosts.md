@@ -20,7 +20,7 @@ echo "host=$HOST owner=$OWNER repo=$REPO branch=$BRANCH base=$BASE"
 
 `$HOST`가 `bitbucket.org`면 Bitbucket, 그 외 자체 호스팅이면 Forgejo로 본다.
 Bitbucket Server(자체 호스팅)를 쓰는 팀도 있으니 **애매하면 묻는다.**
-`.work/config.json`의 `git.host`가 있으면 그것이 최우선이다.
+config의 `git.host`가 있으면 그것이 최우선이다 (프로젝트 `.work/config.json` > 글로벌 `~/.work/config.json`).
 
 파싱이 실패하거나 `owner`/`repo`가 비면 그 자리에서 멈추고 사용자에게 확인한다.
 
@@ -37,8 +37,8 @@ export FORGEJO_TOKEN="..."           # 셸 프로필이나 비밀 관리자에 �
 export FORGEJO_URL="https://git.example.com"
 ```
 
-**토큰을 `.work/config.json`이나 커밋되는 파일에 쓰지 않는다.** 그 파일은 커밋된다.
-`FORGEJO_URL`은 config에 둬도 된다 (비밀이 아니다).
+**토큰을 config 파일(글로벌·프로젝트)이나 커밋되는 파일에 쓰지 않는다.** 그 파일들은 커밋된다.
+`FORGEJO_TOKEN`은 셸 env로만, `FORGEJO_URL`은 config에 둬도 된다 (비밀이 아니다). `/work:setting`으로 잡는다.
 
 ### PR 생성
 
@@ -156,7 +156,7 @@ curl -sS "https://api.bitbucket.org/2.0/repositories/$WORKSPACE/$REPO/default-re
 { "reviewers": [ { "uuid": "{...}" }, { "uuid": "{...}" } ] }
 ```
 
-`.work/config.json`의 `pr.reviewers`에 계정명을 두고, 매번 uuid로 변환해 쓴다.
+config의 `pr.reviewers`(글로벌 또는 프로젝트)에 계정명을 두고, 매번 uuid로 변환해 쓴다.
 uuid를 config에 직접 적어두면 사람이 읽을 수 없어 유지가 안 된다.
 
 Bitbucket은 브랜치명·커밋 메시지의 Jira 키로 티켓과 자동 연결된다.

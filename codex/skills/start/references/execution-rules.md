@@ -15,7 +15,7 @@ git switch feature/PROJ-123-duplicate-email
 
 - 슬러그는 티켓 제목을 소문자 하이픈으로. 한글 제목이면 영문 요약으로 바꾼다 (한글 브랜치명은 CI·툴에서 자주 깨진다)
 - 40자를 넘기지 않는다
-- prefix는 `.work/config.json`의 `branchPrefix` (기본 `feature/`)
+- prefix는 config의 `branchPrefix` (기본 `feature/`). 프로젝트 `.work/config.json` > 글로벌 `~/.work/config.json`
 
 작업 중 base가 많이 움직였으면 중간에 리베이스한다. 마지막에 몰아서 하면 충돌이 커진다.
 

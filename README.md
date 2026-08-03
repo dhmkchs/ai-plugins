@@ -9,11 +9,11 @@ ai-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
-│   ├── plugins/work/         · work 플러그인 (커맨드 13 · 스킬 13)
+│   ├── plugins/work/         · work 플러그인 (커맨드 15 · 스킬 15)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
-    ├── skills/               · work 스킬 13종 (.agents/skills 호환)
+    ├── skills/               · work 스킬 15종 (.agents/skills 호환)
     └── README.md             · 상세 설치·사용법
 ```
 
@@ -35,17 +35,22 @@ claude plugin install work@my-plugins
 
 ## OpenAI Codex
 
-Codex는 마켓플레이스가 아니라 `.agents/skills/` 폴더에서 스킬을 읽는다. 스킬을 복사해 넣는다.
+Codex는 마켓플레이스가 아니라 `.agents/skills/` 폴더에서 스킬을 읽는다. CWD에서 저장소 루트까지,
+**그리고 홈(`~/.agents/skills/`)** 을 스캔한다 — **홈에 두면 그게 곧 글로벌**이라 repo마다 복사할 필요가 없다.
 
 ```bash
-# 개인 — 모든 프로젝트에서
+# 글로벌 (권장) — 모든 프로젝트에서. 심볼릭 링크라 git pull로 자동 갱신
 mkdir -p ~/.agents/skills
-cp -R codex/skills/* ~/.agents/skills/
+ln -sfn "$PWD/codex/skills"/* ~/.agents/skills/     # 저장소를 고정 위치에 둘 때
+# 또는 복사 (갱신 수동):  cp -R codex/skills/* ~/.agents/skills/
 
-# 프로젝트 — 이 프로젝트에서만 (팀과 커밋으로 공유)
+# 프로젝트 한정 — 이 프로젝트에서만 (팀과 커밋으로 공유)
 mkdir -p .agents/skills
 cp -R codex/skills/* .agents/skills/
 ```
+
+> 한 번 링크하면 `setting`을 포함한 전 스킬이 모든 프로젝트에서 뜬다. 저장소를 옮기면 링크가 깨지니 고정 위치에 둔다.
+> 최초 1회만 위 명령을 직접 실행하면, 이후 스킬 갱신·재설치는 `$setting`이 도와준다.
 
 Codex 세션에서 표현을 감지해 자동으로 켜지고, 명시 호출은 `$review`처럼 `$스킬이름` 또는 `/skills`.
 상세는 [`codex/README.md`](./codex/README.md).

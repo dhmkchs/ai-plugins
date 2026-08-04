@@ -107,16 +107,16 @@ planned → in-progress → review → pr-open → done
 ### Claude Code
 
 ```bash
-claude plugin marketplace add ~/Documents/work-kit/work-marketplace
-claude plugin install work@my-plugins
+claude plugin marketplace add dhmkchs/ai-plugins
+claude plugin install work@dhmkchs
 ```
 
 이미 설치돼 있으면 버전 갱신에는 재설치가 필요하다. `marketplace update`만으로는 올라가지 않는다.
 
 ```bash
-claude plugin marketplace update my-plugins
-claude plugin uninstall work@my-plugins
-claude plugin install work@my-plugins
+claude plugin marketplace update dhmkchs
+claude plugin uninstall work@dhmkchs
+claude plugin install work@dhmkchs
 ```
 
 ### Cowork

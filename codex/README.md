@@ -4,20 +4,25 @@
 Codex CLI/IDE에서 쓸 수 있게 스킬로 포장했다.
 
 Codex는 마켓플레이스가 아니라 **`.agents/skills/` 폴더**에서 스킬을 읽는다.
-여기 `codex/skills/`에 든 15개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
+여기 `codex/skills/`에 든 20개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
 
 ```
 codex/
 └── skills/
     ├── setting/SKILL.md
-    ├── host/SKILL.md
     ├── ticket/SKILL.md
     ├── plan/SKILL.md
     ├── start/SKILL.md
+    ├── commit/SKILL.md
     ├── review/SKILL.md
     ├── pr/SKILL.md
     ├── cleanup/SKILL.md
+    ├── release/SKILL.md
     ├── status/SKILL.md
+    ├── adr/SKILL.md
+    ├── api/SKILL.md
+    ├── migrate/SKILL.md
+    ├── e2e/SKILL.md
     ├── explore/SKILL.md
     ├── debug/SKILL.md
     ├── browser/SKILL.md   (+ scripts/check.mjs, references/)
@@ -85,27 +90,33 @@ $ticket 로그인 실패 시 429 응답
 Claude 쪽과 같다. 순서대로 이어서 부른다.
 
 ```
-$ticket → $plan → $start → $review → $pr → $cleanup
+$ticket → $plan → $start → $commit → $review → $pr → $cleanup → $release
 ```
 
 `.work/plans/<TICKET>.md` 플랜 파일이 사슬 전체의 backbone이고, `$status`로 현재 위치를 확인한다.
+설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
 ### 스킬 목록
 
 | 스킬 | 하는 일 |
 |---|---|
 | `setting` | 설정 잡기. 글로벌 `~/.work/config.json` · 프로젝트 `.work/config.json` · 셸 env 토큰 |
-| `host` | OS별 시스템 hosts 파일 조회·수정 (백업 → diff → 승인) |
 | `ticket` | 대화 → Jira 티켓 (중복 확인 · 필드 조회) |
 | `plan` | 티켓 → 코드베이스 정찰 → 슬라이스 플랜 파일 |
 | `start` | 슬라이스 실행 (커밋마다 플랜 갱신 · 재개 가능) |
+| `commit` | 원자적 커밋 분할 · 잔여물/시크릿 검사 · Conventional Commits |
 | `review` | 셀프 리뷰 게이트 (기계 검사 → 적대적 diff) |
 | `pr` | 플랜·커밋 → PR 본문 생성 · Jira 연결 |
 | `cleanup` | 머지 후 브랜치 정리 · 플랜 닫기 · 후속 티켓 |
+| `release` | semver·태그·changelog · 배포순서 · 롤백 |
 | `status` | 플랜 vs git vs Jira 드리프트 검사 |
+| `adr` | 되돌리기 비싼 설계 판단 → 대안·근거·결과 기록 |
+| `api` | REST/GraphQL 계약 우선 설계 (스키마·에러·인증·페이지네이션) |
+| `migrate` | DB 스키마 무중단 변경 (expand-contract·롤백·배포순서) |
+| `e2e` | 브랜치 변경 → Playwright 회귀 테스트 생성·실행·커밋 |
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
-| `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청) |
+| `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
 | `lang` | TS·Java 관용구와 함정 |
@@ -119,7 +130,8 @@ $ticket → $plan → $start → $review → $pr → $cleanup
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Codex `mcp` 설정에 등록) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`setting` 스킬로 안내) |
-| `browser` | `npm i -D playwright` + `npx playwright install chromium` |
+| `browser` · `e2e` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 
 > **설정은 `setting` 스킬로 잡는다.** 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값만 프로젝트 `.work/config.json`.
 > **토큰은 어느 config 파일에도 쓰지 않는다.** 두 파일 다 커밋될 수 있다. 환경변수로 둔다.

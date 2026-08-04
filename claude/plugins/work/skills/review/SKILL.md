@@ -182,7 +182,7 @@ cp /tmp/work-fix-backup-foo.ts src/foo.ts
 
 ### 플랜이 있는 작업이라면
 
-`.work/plans/<TICKET>.md`가 있으면 리뷰 결과를 반영한다.
+`.claude/plans/<TICKET>.md`가 있으면 리뷰 결과를 반영한다.
 
 - 요구사항 표가 전부 ☑인지 대조한다. 코드에 없는데 ☑면 그게 첫 번째 지적 사항이다
 - 리뷰에서 새로 고친 게 있으면 `## 로그`에 한 줄 남긴다

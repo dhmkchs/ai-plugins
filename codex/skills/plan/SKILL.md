@@ -4,7 +4,7 @@ description: >
   Jira 티켓을 읽고 코드베이스를 정찰해 실행 가능한 작업 플랜 파일을 만든다.
   Use when starting work from a ticket — "이 티켓 플랜 짜줘", "PROJ-123 작업 계획",
   "작업 플랜 만들어", "티켓 분석해줘", "이거 어떻게 할지 정리해줘" — or before touching
-  code for a tracked task. Produces `.work/plans/<TICKET>.md` that `start` executes
+  code for a tracked task. Produces `.claude/plans/<TICKET>.md` that `start` executes
   and `pr` turns into a PR description. Requires the Atlassian MCP server.
 ---
 
@@ -23,7 +23,7 @@ description: >
 3. 사용자에게 묻는다. 이때 후보를 함께 보여준다:
    `searchJiraIssuesUsingJql: assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC`
 
-이미 `.work/plans/<TICKET>.md`가 있으면 **덮어쓰지 않는다.** 보여주고 묻는다:
+이미 `.claude/plans/<TICKET>.md`가 있으면 **덮어쓰지 않는다.** 보여주고 묻는다:
 이어서 진행할지(`start`), 다시 계획할지, 다른 티켓인지.
 
 ## 2. 티켓을 끝까지 읽는다
@@ -80,7 +80,7 @@ getJiraIssueRemoteIssueLinks    연결된 PR·문서
 
 ## 5. 플랜 파일을 쓴다
 
-`.work/plans/<TICKET>.md`에 저장한다. 형식은 `references/plan-format.md`가 정본이다.
+`.claude/plans/<TICKET>.md`에 저장한다. 형식은 `references/plan-format.md`가 정본이다.
 **front-matter는 반드시 넣는다** — `start`·`pr`·`status`가 이걸로 상태를 읽는다.
 
 `.work/`가 처음이면 `.gitignore` 처리를 묻는다.
@@ -104,7 +104,7 @@ getJiraIssueRemoteIssueLinks    연결된 PR·문서
 - **Jira 상태는 여기서 바꾸지 않는다.** 실제 착수는 `start`가 한다
 
 ```
-PROJ-123 플랜 작성됨 → .work/plans/PROJ-123.md
+PROJ-123 플랜 작성됨 → .claude/plans/PROJ-123.md
 슬라이스 4개 / 요구사항 6개 / 리스크 1건
 다음: /work:start PROJ-123
 ```

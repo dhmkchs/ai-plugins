@@ -5,7 +5,7 @@ description: >
   Use when opening a pull request — "PR 만들어줘", "PR 올려줘", "풀리퀘 생성",
   "머지 요청 만들어", "PR 올리자", "pull request" — typically right after `review`
   passes. Detects the host from the git remote, builds the description from
-  `.work/plans/<TICKET>.md`, and links the PR back to Jira.
+  `.claude/plans/<TICKET>.md`, and links the PR back to Jira.
 ---
 
 # PR Create

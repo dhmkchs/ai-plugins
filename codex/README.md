@@ -93,7 +93,7 @@ Claude 쪽과 같다. 순서대로 이어서 부른다.
 $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $release
 ```
 
-`.work/plans/<TICKET>.md` 플랜 파일이 사슬 전체의 backbone이고, `$status`로 현재 위치를 확인한다.
+`.claude/plans/<TICKET>.md` 플랜 파일이 사슬 전체의 backbone이고, `$status`로 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
 ### 스킬 목록

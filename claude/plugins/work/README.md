@@ -8,7 +8,7 @@
 ```
 /work:ticket   대화 → Jira 티켓                 (중복 확인 · 필수 필드 조회)
      ↓
-/work:plan     티켓 → .work/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
+/work:plan     티켓 → .claude/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
      ↓
 /work:start    플랜 → 슬라이스 실행              (슬라이스마다 commit 규율로 커밋 · 재개 가능)
      ↓
@@ -66,7 +66,7 @@
 
 ## 플랜 파일
 
-`.work/plans/<TICKET>.md` 하나에 요구사항 표, 정찰 노트, 슬라이스, 설계 판단, 가정, 리스크, 로그가 들어간다.
+`.claude/plans/<TICKET>.md` 하나에 요구사항 표, 정찰 노트, 슬라이스, 설계 판단, 가정, 리스크, 로그가 들어간다.
 front-matter의 `status`로 상태를 관리한다.
 
 ```

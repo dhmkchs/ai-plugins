@@ -120,7 +120,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 ```
 /work:ticket   대화 → Jira 티켓                 (중복 확인 · 필수 필드 조회)
      ↓
-/work:plan     티켓 → .work/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
+/work:plan     티켓 → .claude/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
      ↓
 /work:start    플랜 → 슬라이스 실행              (슬라이스마다 commit 규율로 커밋 · 재개 가능)
      ↓
@@ -135,7 +135,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 /work:release  머지된 변경 → semver·태그·changelog · 배포순서 · 롤백
 ```
 
-**플랜 파일(`.work/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
+**플랜 파일(`.claude/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
 ### 전체 명령 (20종)

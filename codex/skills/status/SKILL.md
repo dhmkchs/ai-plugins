@@ -4,7 +4,7 @@ description: >
   진행 중인 작업 플랜들의 상태를 모아 보여주고, Jira·git 실제 상태와 어긋난 곳을 찾아낸다.
   Use when the user asks what's in flight — "지금 뭐 하고 있었지", "작업 현황", "진행 상황",
   "어디까지 했지", "남은 거 뭐야", "status", "내 작업 목록" — or when resuming after a break
-  and needing to pick up context. Reads `.work/plans/*.md`, cross-checks against git branches
+  and needing to pick up context. Reads `.claude/plans/*.md`, cross-checks against git branches
   and Jira, and reports drift.
 ---
 
@@ -16,7 +16,7 @@ description: >
 ## 1. 수집
 
 ```bash
-ls .work/plans/*.md 2>/dev/null || echo "플랜 없음"
+ls .claude/plans/*.md 2>/dev/null || echo "플랜 없음"
 git branch --format='%(refname:short)' | grep -E '[A-Z]+-[0-9]+' || true
 git status --porcelain
 git log --oneline -1

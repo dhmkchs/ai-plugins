@@ -2,18 +2,18 @@
 
 **choiheesik의 개인 AI 플러그인 저장소.** 같은 개발 작업 워크플로를 여러 AI 코딩 도구에서 쓸 수 있게 도구별로 나눠 담는다.
 
-현재 **Claude Code**와 **OpenAI Codex** 두 도구를 지원한다. 워크플로의 내용(티켓 → 플랜 → 실행 → 리뷰 → PR, 코드베이스 정찰·디버깅·화면 검수)은 같고, 각 도구의 설치 방식에 맞춰 포장만 다르다.
+현재 **Claude Code**와 **OpenAI Codex** 두 도구를 지원한다. 워크플로의 내용(티켓 → 플랜 → 실행 → 커밋 → 리뷰 → PR → 정리 → 릴리즈, 설계·API·마이그레이션·E2E·정찰·디버깅·화면 검수)은 같고, 각 도구의 설치 방식에 맞춰 포장만 다르다.
 
 ```
 ai-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
-│   ├── plugins/work/         · work 플러그인 (커맨드 15 · 스킬 15)
+│   ├── plugins/work/         · work 플러그인 (커맨드 20 · 스킬 20)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
-    ├── skills/               · work 스킬 15종 (.agents/skills 호환)
+    ├── skills/               · work 스킬 20종 (.agents/skills 호환)
     └── README.md             · 상세 설치·사용법
 ```
 
@@ -27,7 +27,7 @@ ai-plugins/
 
 ```bash
 claude plugin marketplace add dhmkchs/ai-plugins
-claude plugin install work@my-plugins
+claude plugin install work@dhmkchs
 ```
 
 설치하면 `/work:ticket`, `/work:review` 같은 커맨드가 뜨고, 스킬은 표현을 감지해 자동으로 켜진다.
@@ -60,7 +60,7 @@ Codex 세션에서 표현을 감지해 자동으로 켜지고, 명시 호출은 
 ## work 워크플로 한눈에
 
 ```
-ticket → plan → start → review → pr → cleanup
+ticket → plan → start → commit → review → pr → cleanup → release
 ```
 
 | 스킬 | 하는 일 |
@@ -68,13 +68,19 @@ ticket → plan → start → review → pr → cleanup
 | `ticket` | 대화 → Jira 티켓 (중복 확인 · 필드 조회) |
 | `plan` | 티켓 → 코드베이스 정찰 → 슬라이스 플랜 파일 |
 | `start` | 슬라이스 실행 (커밋마다 플랜 갱신 · 재개 가능) |
+| `commit` | 원자적 커밋 분할 · 잔여물/시크릿 검사 · Conventional Commits |
 | `review` | 셀프 리뷰 게이트 (기계 검사 → 적대적 diff) |
 | `pr` | 플랜·커밋 → PR 본문 생성 · Jira 연결 |
 | `cleanup` | 머지 후 브랜치 정리 · 플랜 닫기 · 후속 티켓 |
+| `release` | semver·태그·changelog · 배포순서 · 롤백 |
 | `status` | 플랜 vs git vs Jira 드리프트 검사 |
+| `adr` | 되돌리기 비싼 설계 판단 → 대안·근거·결과 기록 |
+| `api` | REST/GraphQL 계약 우선 설계 (스키마·에러·인증·페이지네이션) |
+| `migrate` | DB 스키마 무중단 변경 (expand-contract·롤백·배포순서) |
+| `e2e` | 브랜치 변경 → Playwright 회귀 테스트 생성·실행·커밋 |
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
-| `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청) |
+| `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
 | `lang` | TS·Java 관용구와 함정 |
@@ -88,7 +94,8 @@ ticket → plan → start → review → pr → cleanup
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Rovo) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 |
-| `browser` | `npm i -D playwright` + `npx playwright install chromium` |
+| `browser` · `e2e` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 
 > **토큰을 `.work/config.json`에 쓰지 않는다.** 그 파일은 커밋된다. 환경변수로 둔다.
 

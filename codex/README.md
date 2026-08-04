@@ -113,7 +113,7 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `adr` | 되돌리기 비싼 설계 판단 → 대안·근거·결과 기록 |
 | `api` | REST/GraphQL 계약 우선 설계 (스키마·에러·인증·페이지네이션) |
 | `migrate` | DB 스키마 무중단 변경 (expand-contract·롤백·배포순서) |
-| `e2e` | 브랜치 변경 → Playwright 회귀 테스트 생성·실행·커밋 |
+| `e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
 | `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |

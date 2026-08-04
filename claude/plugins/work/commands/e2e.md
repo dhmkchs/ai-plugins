@@ -1,5 +1,5 @@
 ---
-description: 작업 브랜치 변경을 Playwright E2E 테스트 코드로 생성·실행·커밋한다
+description: 작업 브랜치에서 바뀐 코드를 분석해 Playwright E2E 테스트로 만들어 실행·커밋한다
 argument-hint: [선택: 테스트할 플로우, 예: "회원가입 플로우"]
 ---
 

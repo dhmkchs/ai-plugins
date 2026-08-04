@@ -155,7 +155,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `/work:adr` | 되돌리기 비싼 설계 판단을 대안·근거·결과와 함께 ADR로 기록 |
 | `/work:api` | REST/GraphQL 계약을 스키마·에러·인증·페이지네이션까지 계약 우선 설계 |
 | `/work:migrate` | DB 스키마를 expand-contract·롤백·배포순서로 무중단 변경 |
-| `/work:e2e` | 브랜치 변경 → Playwright 회귀 테스트 코드 생성·실행·커밋 |
+| `/work:e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `/work:explore` | 낯선 코드베이스 정찰 → 수정 지점 국소화 → 정찰 노트 |
 | `/work:debug` | 재현 → 국소화 → 가설 → 최소수정 → 회귀방지 |
 | `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성) |

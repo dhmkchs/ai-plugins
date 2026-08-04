@@ -4,7 +4,7 @@ description: >
   작업 플랜 파일을 읽어 슬라이스 단위로 구현을 진행하고, 진행 상태를 플랜에 계속 기록한다.
   Use when starting or resuming implementation from a plan — "작업 시작", "PROJ-123 작업해줘",
   "이어서 진행", "플랜대로 진행해줘", "다음 슬라이스", "작업 재개" — or after
-  `plan` produced `.claude/plans/<TICKET>.md`. Resumable: picks up at the first
+  `plan` produced `.agents/plans/<TICKET>.md`. Resumable: picks up at the first
   unfinished slice. Creates the branch and moves the Jira ticket to In Progress.
 ---
 
@@ -16,9 +16,9 @@ description: >
 
 ## 1. 플랜 로드
 
-티켓 번호: 인자 → 현재 브랜치명에서 추출 → `.claude/plans/` 목록을 보여주고 선택 → 묻는다.
+티켓 번호: 인자 → 현재 브랜치명에서 추출 → `.agents/plans/` 목록을 보여주고 선택 → 묻는다.
 
-`.claude/plans/<TICKET>.md`가 없으면 여기서 멈춘다.
+`.agents/plans/<TICKET>.md`가 없으면 여기서 멈춘다.
 `/work:plan <TICKET>`을 먼저 돌리라고 안내한다. **플랜 없이 진행하지 않는다.**
 
 front-matter의 `status`로 분기한다.
@@ -66,7 +66,7 @@ git config -f ../repo-PROJ-124/.git/config branch.feature/PROJ-124-x.base main
 ```
 
 각 worktree는 독립된 작업 트리라 빌드·테스트가 서로를 방해하지 않는다.
-플랜 파일은 `.claude/plans/`에 티켓별로 있으므로 그대로 쓰면 된다.
+플랜 파일은 `.agents/plans/`에 티켓별로 있으므로 그대로 쓰면 된다.
 끝나면 `git worktree remove ../repo-PROJ-124`.
 
 플랜의 `branch`·`status`를 갱신하고, **Jira 상태 전이를 승인받는다.**

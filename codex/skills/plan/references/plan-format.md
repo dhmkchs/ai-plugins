@@ -1,6 +1,6 @@
 # 플랜 파일 정본 스키마
 
-경로: `.claude/plans/<TICKET>.md` (예: `.claude/plans/PROJ-123.md`)
+경로: `.agents/plans/<TICKET>.md` (예: `.agents/plans/PROJ-123.md`)
 
 `plan`이 만들고, `start`가 갱신하고, `pr`가 읽고, `status`가 집계한다.
 **front-matter의 키 이름을 바꾸지 않는다.** 다른 스킬이 이걸로 상태를 판단한다.

@@ -14,7 +14,7 @@ description: >
 
 ## 1. 대상 확인
 
-티켓 번호: 인자 → 현재 브랜치 → `.claude/plans/`에서 `status: pr-open`인 것들을 보여주고 선택.
+티켓 번호: 인자 → 현재 브랜치 → `.agents/plans/`에서 `status: pr-open`인 것들을 보여주고 선택.
 
 **머지 여부를 실제로 확인한다.** 플랜의 `status`를 믿지 않는다.
 
@@ -69,7 +69,7 @@ git worktree prune
 
 ## 4. 플랜 닫기
 
-`.claude/plans/<TICKET>.md`를 갱신한다.
+`.agents/plans/<TICKET>.md`를 갱신한다.
 
 ```yaml
 status: done
@@ -82,7 +82,7 @@ updated: 2026-08-03
 ```
 
 **플랜 파일을 지우지 않는다.** 6개월 뒤 "이거 왜 이렇게 했지"의 답이 여기 있다.
-저장소가 지저분해지는 게 걱정이면 `.claude/plans/done/`으로 옮기는 것까지만 제안한다.
+저장소가 지저분해지는 게 걱정이면 `.agents/plans/done/`으로 옮기는 것까지만 제안한다.
 
 ## 5. Jira 마무리
 
@@ -122,7 +122,7 @@ transitionJiraIssue           Done 계열로. 승인받고 실행
 - 머지 확인: origin/main 에 반영됨 (squash, a1b2c3d)
 - 로컬 브랜치 삭제 ✓ / 원격 브랜치 이미 삭제됨
 - worktree 없음
-- 플랜: status=done, .claude/plans/PROJ-123.md 유지
+- 플랜: status=done, .agents/plans/PROJ-123.md 유지
 - Jira: In Review → Done ✓
 - 후속 티켓 2건 생성: PROJ-141, PROJ-142
 

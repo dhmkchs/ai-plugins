@@ -103,8 +103,12 @@ ticket → plan → start → commit → review → pr → cleanup → release
 
 `work` 워크플로의 정본은 `claude/plugins/work/skills/`다. 여기서 스킬을 고친 뒤
 `codex/skills/`로 동기화하면 두 도구가 같은 절차를 공유한다.
+플랜 경로만 도구별로 다르다 — Claude는 `.claude/plans/`, Codex는 `.agents/plans/`.
+그래서 동기화 뒤 그 경로만 Codex 규약으로 치환한다.
 
 ```bash
 # claude → codex 동기화
 rsync -a --delete claude/plugins/work/skills/ codex/skills/
+# Claude 전용 플랜 경로를 Codex 규약으로 (macOS sed는 -i ''; GNU sed는 -i)
+grep -rl '.claude/plans' codex/skills/ | xargs sed -i '' 's|.claude/plans|.agents/plans|g'
 ```

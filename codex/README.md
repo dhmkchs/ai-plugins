@@ -93,7 +93,7 @@ Claude 쪽과 같다. 순서대로 이어서 부른다.
 $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $release
 ```
 
-`.claude/plans/<TICKET>.md` 플랜 파일이 사슬 전체의 backbone이고, `$status`로 현재 위치를 확인한다.
+`.agents/plans/<TICKET>.md` 플랜 파일이 사슬 전체의 backbone이고, `$status`로 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
 ### 스킬 목록
@@ -144,10 +144,15 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
   다른 스킬과 이름이 겹칠 수 있으니, 겹치면 폴더명을 `work-review`처럼 바꾼다.
 - **커맨드 래퍼 불필요.** Claude의 `commands/*.md`(슬래시 등록용)는 Codex에 필요 없다.
   Codex는 스킬을 자동 발견하고 `$이름`으로 명시 호출한다.
+- **플랜 경로가 다르다.** Claude는 플랜을 `.claude/plans/`에, Codex는 `.agents/plans/`에 둔다
+  (각 도구의 dotdir 규약). `.claude/`는 Claude Code 전용이라 Codex 정본에는 쓰지 않는다.
 - **정본은 Claude 쪽.** 스킬을 고칠 때는 `claude/plugins/work/skills/`에서 고치고 아래로 동기화한다.
+  동기화 뒤 **플랜 경로만 Codex 규약으로 치환**한다 (`.claude/plans` → `.agents/plans`).
 
 ```bash
 rsync -a --delete ../claude/plugins/work/skills/ ./skills/
+# Claude 전용 경로를 Codex 규약으로 (macOS sed는 -i ''; GNU sed는 -i)
+grep -rl '.claude/plans' skills/ | xargs sed -i '' 's|.claude/plans|.agents/plans|g'
 ```
 
 명시 호출을 끄고 자동 호출만 쓰거나 그 반대로 하려면 각 스킬에 `agents/openai.yaml`을 두고

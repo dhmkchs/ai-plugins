@@ -10,18 +10,26 @@
      ↓
 /work:plan     티켓 → .work/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
      ↓
-/work:start    플랜 → 슬라이스 실행              (커밋마다 플랜 갱신 · 재개 가능)
+/work:start    플랜 → 슬라이스 실행              (슬라이스마다 commit 규율로 커밋 · 재개 가능)
+     ↓
+/work:commit   변경 → 원자적 커밋               (Conventional Commits · 왜를 남김)
      ↓
 /work:review   변경 → 셀프 리뷰 게이트            (기계 검사 → 적대적 diff)
      ↓
 /work:pr       플랜 + 커밋 → PR 본문 · 생성 · Jira 연결
      ↓
 /work:cleanup  머지 후 → 브랜치 정리 · 플랜 닫기 · 후속 티켓 회수
+     ↓
+/work:release  머지된 변경 → semver·태그·changelog · 배포순서 · 롤백
 ```
 
 각 단계는 앞 단계의 산출물을 읽는다. **플랜 파일이 사슬 전체의 backbone이다** —
 `start`가 진행 상태를 여기 기록하고, `pr`이 이걸로 PR 본문을 만든다.
 그래서 PR 설명을 새로 창작하지 않고, 가정·리스크·범위 밖이 누락되지 않는다.
+
+사슬을 떠받치는 **설계·구현 스킬**은 필요할 때 끼어든다 —
+`adr`(되돌리기 비싼 설계 판단 기록), `api`(엔드포인트 계약 우선 설계),
+`migrate`(무중단 스키마 변경), `e2e`(브랜치 변경 → Playwright 회귀 테스트).
 
 `/work:status`로 언제든 현재 위치를 확인한다.
 
@@ -30,23 +38,31 @@
 | 명령 | 하는 일 |
 |---|---|
 | `/work:setting` | 설정 잡기. 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값은 `.work/config.json`, 토큰은 셸 env |
-| `/work:host` | OS별 시스템 hosts 파일 조회·수정 (백업 → diff → 승인). 로컬 도메인 매핑 |
 | `/work:ticket` | Jira 티켓 생성. 중복 확인 → 4요소(문제·영향·완료조건·범위밖) → 필드 조회 → 승인 후 생성 |
 | `/work:plan` | 티켓 읽기 → 코드베이스 정찰 → 요구사항 표 → 수직 슬라이스 → 플랜 파일 |
 | `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 커밋+플랜 갱신 |
+| `/work:commit` | 원자적 커밋 분할 + 잔여물·시크릿 검사 → Conventional Commits로 왜를 남김 |
 | `/work:review` | 디버그 잔여물·자격증명·비활성 테스트 검사 → 적대적 diff 리뷰 → 설명 가능성 게이트 |
 | `/work:pr` | 호스트 감지 → 플랜에서 본문 생성 → PR 생성 → Jira 코멘트·상태 전이 |
 | `/work:cleanup` | 머지 확인 → 브랜치·worktree 정리 → 플랜 닫기 → Jira Done → 후속 티켓 생성 |
+| `/work:release` | semver 버전·태그·changelog → 배포 순서 → 배포 후 확인 → 롤백 계획 |
 | `/work:status` | 플랜 현황 + **드리프트 검사** (플랜 vs git vs Jira 불일치) |
+| `/work:adr` | 되돌리기 비싼 설계 판단을 대안·근거·결과와 함께 ADR로 기록 |
+| `/work:api` | REST/GraphQL 계약을 스키마·에러·인증·페이지네이션까지 계약 우선 설계 |
+| `/work:migrate` | DB 스키마를 expand-contract·롤백·배포순서로 무중단 변경 |
+| `/work:e2e` | 브랜치 변경 → Playwright 회귀 테스트 코드 생성·실행·커밋 |
 | `/work:explore` | 낯선 코드베이스 정찰 → 수정 지점 국소화 → 정찰 노트 |
 | `/work:debug` | 재현 → 국소화 → 가설 → 최소수정 → 회귀방지 |
-| `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 |
+| `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성) |
 | `/work:feature` | Jira 없이 요구사항을 구현·테스트·PR까지 |
 | `/work:pair` | AI에게 코드를 맡길 때의 요청·검증 사이클 |
 | `/work:lang` | TS·Java 관용구와 함정 |
 
 슬래시로 부르지 않아도 된다. 스킬은 표현을 감지해 자동으로 켜진다 —
 "PR 올리기 전에 봐줘" → `review`, "이 페이지 콘솔 에러 있나" → `browser`.
+
+**`browser` vs `e2e`**: 둘 다 Playwright지만 목적이 다르다. `browser`는 방금 만든 화면이
+지금 도는지 *한 번 보고 버리는* 자가검수, `e2e`는 브랜치 변경을 *커밋되는 회귀 테스트*로 박제한다.
 
 ## 플랜 파일
 
@@ -77,7 +93,8 @@ planned → in-progress → review → pr-open → done
 | `ticket` · `plan` · Jira 전이 | **Atlassian MCP 서버** (Rovo). 없으면 해당 단계에서 멈추고 알린다 |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`/work:setting`으로 안내) |
-| `browser` | `npm i -D playwright` + `npx playwright install chromium` |
+| `browser` · `e2e` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 
 **토큰을 config 파일에 쓰지 않는다.** 글로벌·프로젝트 config 모두 커밋될 수 있다. 환경변수로 둔다.
 

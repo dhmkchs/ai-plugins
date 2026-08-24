@@ -1,6 +1,6 @@
 # 설치 안내
 
-이 저장소(`dhmkchs/ai-plugins`)는 Claude Code **마켓플레이스**다. 안에 `work` 플러그인(스킬 20종)이
+이 저장소(`dhmkchs/ai-plugins`)는 Claude Code **마켓플레이스**다. 안에 `work` 플러그인(스킬 21종)이
 들어 있고, Claude Code(CLI)와 Cowork(데스크톱 앱) 양쪽에서 쓸 수 있다.
 
 마켓플레이스 카탈로그(`.claude-plugin/marketplace.json`)는 **저장소 루트**에 있고, 플러그인 실체는
@@ -13,9 +13,9 @@ ai-plugins/
 └── claude/
     └── plugins/
         └── work/
-            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.7.0)
-            ├── commands/                     ← 슬래시 커맨드 20종
-            └── skills/                       ← 스킬 20종
+            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.8.0)
+            ├── commands/                     ← 슬래시 커맨드 21종
+            └── skills/                       ← 스킬 21종
 ```
 
 ---
@@ -38,7 +38,7 @@ claude plugin install work@dhmkchs
 확인:
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.7.0   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.8.0   Scope: user   Status: enabled
 ```
 
 스킬은 `work:ticket`, `work:review`처럼 `work:` 네임스페이스로 등록된다.

@@ -9,11 +9,11 @@ ai-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
-│   ├── plugins/work/         · work 플러그인 (커맨드 20 · 스킬 20)
+│   ├── plugins/work/         · work 플러그인 (커맨드 21 · 스킬 21)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
-    ├── skills/               · work 스킬 20종 (.agents/skills 호환)
+    ├── skills/               · work 스킬 21종 (.agents/skills 호환)
     └── README.md             · 상세 설치·사용법
 ```
 
@@ -67,7 +67,8 @@ ticket → plan → start → commit → review → pr → cleanup → release
 |---|---|
 | `ticket` | 대화 → Jira 티켓 (중복 확인 · 필드 조회) |
 | `plan` | 티켓 → 코드베이스 정찰 → 슬라이스 플랜 파일 |
-| `start` | 슬라이스 실행 (커밋마다 플랜 갱신 · 재개 가능) |
+| `start` | 슬라이스 실행 (슬라이스마다 구현+유닛 테스트 · 커밋 · 플랜 갱신 · 재개 가능) |
+| `test` | 유닛 테스트 표준 (행위 기준 · 엣지 케이스 도출 · 더블 범위 · 스멜 체크리스트) |
 | `commit` | 원자적 커밋 분할 · 잔여물/시크릿 검사 · Conventional Commits |
 | `review` | 셀프 리뷰 게이트 (기계 검사 → 적대적 diff) |
 | `pr` | 플랜·커밋 → PR 본문 생성 · Jira 연결 |

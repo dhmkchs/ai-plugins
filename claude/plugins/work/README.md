@@ -10,7 +10,7 @@
      ↓
 /work:plan     티켓 → .claude/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
      ↓
-/work:start    플랜 → 슬라이스 실행              (슬라이스마다 commit 규율로 커밋 · 재개 가능)
+/work:start    플랜 → 슬라이스 실행              (슬라이스마다 구현+유닛 테스트 → 커밋 · 재개 가능)
      ↓
 /work:commit   변경 → 원자적 커밋               (Conventional Commits · 왜를 남김)
      ↓
@@ -27,6 +27,9 @@
 `start`가 진행 상태를 여기 기록하고, `pr`이 이걸로 PR 본문을 만든다.
 그래서 PR 설명을 새로 창작하지 않고, 가정·리스크·범위 밖이 누락되지 않는다.
 
+`start`의 슬라이스는 **구현과 유닛 테스트를 함께** 낸다. 무엇을 어떻게 테스트할지는 `test`가 정본이고,
+플랜의 슬라이스에 붙은 `테스트:` 줄이 그 입력이 된다 — 테스트가 마지막으로 밀려 사라지지 않게 하는 장치다.
+
 사슬을 떠받치는 **설계·구현 스킬**은 필요할 때 끼어든다 —
 `adr`(되돌리기 비싼 설계 판단 기록), `api`(엔드포인트 계약 우선 설계),
 `migrate`(무중단 스키마 변경), `e2e`(브랜치에서 바뀐 코드로 Playwright 회귀 테스트 작성).
@@ -40,7 +43,8 @@
 | `/work:setting` | 설정 잡기. 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값은 `.work/config.json`, 토큰은 셸 env |
 | `/work:ticket` | Jira 티켓 생성. 중복 확인 → 4요소(문제·영향·완료조건·범위밖) → 필드 조회 → 승인 후 생성 |
 | `/work:plan` | 티켓 읽기 → 코드베이스 정찰 → 요구사항 표 → 수직 슬라이스 → 플랜 파일 |
-| `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 커밋+플랜 갱신 |
+| `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 **구현+유닛 테스트**→커밋→플랜 갱신 |
+| `/work:test` | 유닛 테스트 표준. 행위 표 도출 → 작성 → 실행 → 스멜 체크리스트. `start`가 슬라이스마다 이걸 탄다 |
 | `/work:commit` | 원자적 커밋 분할 + 잔여물·시크릿 검사 → Conventional Commits로 왜를 남김 |
 | `/work:review` | 디버그 잔여물·자격증명·비활성 테스트 검사 → 적대적 diff 리뷰 → 설명 가능성 게이트 |
 | `/work:pr` | 호스트 감지 → 플랜에서 본문 생성 → PR 생성 → Jira 코멘트·상태 전이 |
@@ -147,6 +151,8 @@ claude plugin install work@dhmkchs
 `SKILL.md`는 평범한 마크다운이다. 고쳐 쓰는 걸 전제로 만들었다.
 
 - **팀 컨벤션** — `skills/review/references/checklist.md`에 팀 규칙 추가
+- **테스트 기준** — `skills/test/SKILL.md`의 MUST/SHOULD와 `references/checklist.md`를 팀 기준으로 조정.
+  테스트 이름 언어(한글/영문)는 저장소 관례를 따르게 돼 있다
 - **PR 형식** — `skills/feature/references/pr-description.md`를 팀 템플릿으로 교체
 - **반복하는 실수** — `skills/debug/references/failure-catalog.md`에 계속 append.
   이 파일이 시간이 지나면 가장 값어치가 커진다

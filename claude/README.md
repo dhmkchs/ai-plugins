@@ -14,9 +14,9 @@ ai-plugins/
 └── claude/
     ├── plugins/
     │   └── work/
-    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.7.0)
-    │       ├── commands/                     ← 슬래시 커맨드 20종 (/work:*)
-    │       └── skills/                       ← 스킬 20종
+    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.8.0)
+    │       ├── commands/                     ← 슬래시 커맨드 21종 (/work:*)
+    │       └── skills/                       ← 스킬 21종
     ├── INSTALL.md
     └── README.md             ← 이 문서
 ```
@@ -24,7 +24,7 @@ ai-plugins/
 | 항목 | 값 |
 |---|---|
 | 마켓플레이스 이름 | `dhmkchs` |
-| 플러그인 | `work@dhmkchs` (v0.7.0) |
+| 플러그인 | `work@dhmkchs` (v0.8.0) |
 | 저장소 | `github.com/dhmkchs/ai-plugins` |
 | 대상 스택 | JavaScript / TypeScript, Java (Spring) |
 
@@ -50,7 +50,7 @@ Claude Code 세션 안에서는 슬래시 커맨드로도 같다.
 
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.7.0   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.8.0   Scope: user   Status: enabled
 ```
 
 비공개 저장소면 설치하는 쪽이 저장소 읽기 권한(SSH 키 또는 토큰)을 가지고 있어야 한다.
@@ -122,7 +122,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
      ↓
 /work:plan     티켓 → .claude/plans/PROJ-123.md   (정찰 결과를 플랜에 임베드)
      ↓
-/work:start    플랜 → 슬라이스 실행              (슬라이스마다 commit 규율로 커밋 · 재개 가능)
+/work:start    플랜 → 슬라이스 실행              (슬라이스마다 구현+유닛 테스트 → 커밋 · 재개 가능)
      ↓
 /work:commit   변경 → 원자적 커밋               (Conventional Commits · 왜를 남김)
      ↓
@@ -138,14 +138,15 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 **플랜 파일(`.claude/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
-### 전체 명령 (20종)
+### 전체 명령 (21종)
 
 | 명령 | 하는 일 |
 |---|---|
 | `/work:setting` | 설정 잡기. 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값은 `.work/config.json`, 토큰은 셸 env |
 | `/work:ticket` | Jira 티켓 생성. 중복 확인 → 4요소(문제·영향·완료조건·범위밖) → 필드 조회 → 승인 후 생성 |
 | `/work:plan` | 티켓 읽기 → 코드베이스 정찰 → 요구사항 표 → 수직 슬라이스 → 플랜 파일 |
-| `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 커밋+플랜 갱신 |
+| `/work:start` | 첫 미완료 슬라이스부터 실행. 브랜치 생성, Jira 전이, 슬라이스마다 **구현+유닛 테스트**→커밋→플랜 갱신 |
+| `/work:test` | 유닛 테스트 작성·보강·리뷰. 행위 표 도출 → 작성 → 실행 → 스멜 체크리스트 |
 | `/work:commit` | 원자적 커밋 분할 · 잔여물/시크릿 검사 · Conventional Commits로 왜를 남김 |
 | `/work:review` | 디버그 잔여물·자격증명·비활성 테스트 검사 → 적대적 diff 리뷰 → 설명 가능성 게이트 |
 | `/work:pr` | 호스트 감지 → 플랜에서 본문 생성 → PR 생성 → Jira 코멘트·상태 전이 |

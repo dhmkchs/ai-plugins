@@ -5,7 +5,7 @@ description: >
   Use when opening a pull request — "PR 만들어줘", "PR 올려줘", "풀리퀘 생성",
   "머지 요청 만들어", "PR 올리자", "pull request" — typically right after `review`
   passes. Detects the host from the git remote, builds the description from
-  `.agents/plans/<TICKET>.md`, and links the PR back to Jira.
+  `.claude/plans/<TICKET>.md`, and links the PR back to Jira.
 ---
 
 # PR Create
@@ -92,6 +92,24 @@ remote URL에서 `owner`/`repo`를 파싱한다. SSH(`git@host:owner/repo.git`)�
 ```
 
 플랜 `## 로그`의 "발견" 항목은 **후속 작업 목록**이 된다. 여기서 후속 티켓 생성을 제안한다 (`ticket`).
+
+### 금지 문구 — 본문에서 지운다
+
+```
+전반적으로 개선했습니다        문제없이 동작합니다
+여러 가지를 수정했습니다        테스트 완료 (명령·숫자 없이)
+코드를 정리했습니다            안정성을 향상
+더 나은 구조로 변경            성능을 개선 (숫자 없이)
+사소한 변경                   필요한 부분을 반영
+```
+
+판정 기준 하나: **그 문장을 읽고 리뷰어가 diff의 어디를 봐야 하는지 아는가.**
+모르면 지우거나 파일·숫자로 바꾼다.
+
+```
+성능을 개선  →  목록 조회 p95 1.2s → 380ms (N+1 제거, UserRepository.java:47)
+테스트 완료  →  ./gradlew test — 142 passed → 148 passed (신규 6건)
+```
 
 ### PR 크기 확인
 

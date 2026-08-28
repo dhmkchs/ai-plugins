@@ -88,6 +88,21 @@ diff는 "무엇을 바꿨나"를 이미 보여준다. 커밋 메시지는 diff�
 
 "왜"가 자명한 사소한 변경(오타·포맷)은 body 없이 subject만으로 충분하다. **body를 위한 body를 쓰지 않는다.**
 
+### 금지 subject — 이 문자열이 나오면 다시 쓴다
+
+```
+update            수정              minor fixes
+fix bug           버그 수정          misc / 기타
+wip               개선              apply feedback
+change            코드 정리          address review comments
+```
+
+공통 증상은 하나다 — **목적어가 없다.** 무엇을 update 했는지, 어떤 bug 인지가 빠져 있다.
+목적어를 넣으면 대개 자동으로 고쳐진다: `fix bug` → `fix(auth): reject expired refresh token`.
+
+`apply feedback` / `address review comments`는 특히 나쁘다. 6개월 뒤 그 리뷰 코멘트를
+아무도 찾지 못한다. 리뷰 때문에 **무엇이 바뀌었는지**를 쓴다.
+
 ## 5. 스테이징 리뷰 → 커밋
 
 커밋 메시지를 만들면 **스테이징 요약 + 메시지를 보여주고** 커밋한다.

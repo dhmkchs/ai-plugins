@@ -120,13 +120,21 @@ E2E로 만들지 않는다. E2E는 가장 비싸고 가장 잘 깨지는 층이�
 브라우저 바이너리와 패키지 버전이 어긋나면 실행 자체가 안 된다. 먼저 확인한다.
 
 ```bash
-npx playwright --version          # 현재 1.62.x
+npx playwright --version          # 설치된 버전을 여기서 확인한다
 npx playwright install chromium   # 브라우저 없으면
 ```
 
-버전별 API 가용성 주의: `page.screencast`(1.59+), `tracing.startHar`(1.60+),
-`page.localStorage`(1.61+), WebP 스크린샷·`retryStrategy`(1.62+).
-**설치된 버전보다 새 API를 쓰면 조용히 `undefined`가 된다.** 쓰기 전에 버전을 확인한다.
+**이 문서에 Playwright API 목록을 적어두지 않는다.** 적는 순간 썩고, 썩었는지 아무도 모른다.
+API 가용성은 아래에서 확인한다 — **문서가 이 문서보다 항상 맞다.**
+
+| 확인할 것 | 어디서 |
+|---|---|
+| 최신 API·시그니처 | `https://playwright.dev/docs/api/class-page` |
+| 어느 버전에 추가됐나 | `https://github.com/microsoft/playwright/releases` |
+| 지금 설치된 버전에 있나 | `node -e "const {chromium}=require('playwright'); console.log(typeof (await chromium.launch()).newContext)"` 식으로 직접 확인 |
+
+**설치된 버전보다 새 API를 쓰면 조용히 `undefined`가 된다** — 예외가 아니라 무반응이라 더 나쁘다.
+새로 알게 된 API를 쓰기 전에 **그 객체에 실제로 있는지 한 번 찍어본다.**
 
 실행 실패·한글 깨짐·타임아웃은 `references/troubleshooting.md`.
 

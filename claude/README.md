@@ -14,9 +14,9 @@ ai-plugins/
 └── claude/
     ├── plugins/
     │   └── work/
-    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.8.0)
-    │       ├── commands/                     ← 슬래시 커맨드 22종 (/work:*)
-    │       └── skills/                       ← 스킬 22종
+    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.11.1)
+    │       ├── commands/                     ← 슬래시 커맨드 24종 (/work:*)
+    │       └── skills/                       ← 스킬 24종
     ├── INSTALL.md
     └── README.md             ← 이 문서
 ```
@@ -24,7 +24,7 @@ ai-plugins/
 | 항목 | 값 |
 |---|---|
 | 마켓플레이스 이름 | `dhmkchs` |
-| 플러그인 | `work@dhmkchs` (v0.8.0) |
+| 플러그인 | `work@dhmkchs` (v0.11.1) |
 | 저장소 | `github.com/dhmkchs/ai-plugins` |
 | 대상 스택 | JavaScript / TypeScript, Java (Spring) |
 
@@ -50,7 +50,7 @@ Claude Code 세션 안에서는 슬래시 커맨드로도 같다.
 
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.8.0   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.11.1   Scope: user   Status: enabled
 ```
 
 비공개 저장소면 설치하는 쪽이 저장소 읽기 권한(SSH 키 또는 토큰)을 가지고 있어야 한다.
@@ -138,7 +138,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 **플랜 파일(`.claude/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
-### 전체 명령 (22종)
+### 전체 명령 (24종)
 
 | 명령 | 하는 일 |
 |---|---|
@@ -159,15 +159,19 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `/work:e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `/work:explore` | 낯선 코드베이스 정찰 → 수정 지점 국소화 → 정찰 노트 |
 | `/work:debug` | 재현 → 국소화 → 가설 → 최소수정 → 회귀방지 |
+| `/work:refactor` | 구조 개선. git 이력으로 후보 → 삭제 테스트 → 의존성 분류 → 설계 2회 → before/after 지표 |
 | `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성) |
 | `/work:ui` | 디자인(피그마·시안)에서 값 추출 → 디자인 시스템 매핑 → 구현 → 렌더 값 대조 |
+| `/work:perf` | 스로틀 고정 기준선 측정 → 원인 확정(커버리지·시프트 범인) → 수정 → 재측정 → 예산 |
 | `/work:feature` | Jira 없이 요구사항을 구현·테스트·PR까지 |
 | `/work:pair` | AI에게 코드를 맡길 때의 요청·검증 사이클 |
 | `/work:lang` | TS·Java 관용구와 함정 |
 
 슬래시로 부르지 않아도 스킬은 표현을 감지해 자동으로 켜진다 — "PR 올리기 전에 봐줘" → `review`.
 `browser`(일회성 자가검수)와 `e2e`(영속 회귀 테스트)는 목적이 다르다.
-화면 관련 스킬은 축이 셋이다 — `browser`는 **동작하나**, `ui`는 **시안대로 나왔나**, `e2e`는 **다음에도 지켜지나**.
+구조를 바꾸는 작업(`refactor`)과 동작을 바꾸는 작업(`feature`·`debug`)은 커밋을 섞지 않는다.
+화면 관련 스킬은 축이 넷이다 — `browser`는 **동작하나**, `ui`는 **시안대로 나왔나**,
+`perf`는 **얼마나 빠른가**, `e2e`는 **다음에도 지켜지나**.
 
 ### 전제 조건
 
@@ -176,7 +180,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `ticket` · `plan` · Jira 전이 | **Atlassian MCP 서버** (Rovo) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`/work:setting`으로 안내) |
-| `browser` · `e2e` · `ui` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `browser` · `e2e` · `ui` · `perf` | `npm i -D @playwright/test` + `npx playwright install chromium` |
 | `ui` (피그마 소스일 때) | Figma MCP 서버. 이미지·스크린샷만 있으면 없어도 된다 |
 | `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 

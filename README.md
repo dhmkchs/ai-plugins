@@ -9,11 +9,11 @@ ai-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
-│   ├── plugins/work/         · work 플러그인 (커맨드 22 · 스킬 22)
+│   ├── plugins/work/         · work 플러그인 (커맨드 24 · 스킬 24)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
-    ├── skills/               · work 스킬 22종 (.agents/skills 호환)
+    ├── skills/               · work 스킬 24종 (.agents/skills 호환)
     └── README.md             · 상세 설치·사용법
 ```
 
@@ -81,8 +81,10 @@ ticket → plan → start → commit → review → pr → cleanup → release
 | `e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
+| `refactor` | 얕은 모듈을 깊게 — 삭제 테스트 판정 · 의존성 분류 · 설계 2회 · 지표 대조 |
 | `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |
 | `ui` | 디자인(피그마·시안) → 값 추출 · 디자인 시스템 매핑 · 렌더 대조 |
+| `perf` | 성능 기준선 측정 → 원인 확정 → 수정 → 재측정 → 예산 고정 (Core Web Vitals) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
 | `lang` | TS·Java 관용구와 함정 |
@@ -96,7 +98,7 @@ ticket → plan → start → commit → review → pr → cleanup → release
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Rovo) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 |
-| `browser` · `e2e` · `ui` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `browser` · `e2e` · `ui` · `perf` | `npm i -D @playwright/test` + `npx playwright install chromium` |
 | `ui` (피그마 소스일 때) | Figma MCP 서버 (이미지·스크린샷만 있으면 없어도 됨) |
 | `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 

@@ -4,7 +4,7 @@
 Codex CLI/IDE에서 쓸 수 있게 스킬로 포장했다.
 
 Codex는 마켓플레이스가 아니라 **`.agents/skills/` 폴더**에서 스킬을 읽는다.
-여기 `codex/skills/`에 든 22개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
+여기 `codex/skills/`에 든 24개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
 
 ```
 codex/
@@ -26,8 +26,10 @@ codex/
     ├── e2e/SKILL.md
     ├── explore/SKILL.md
     ├── debug/SKILL.md
+    ├── refactor/SKILL.md
     ├── browser/SKILL.md   (+ scripts/check.mjs, references/)
-    ├── ui/SKILL.md
+    ├── ui/SKILL.md          (+ scripts/ui-check.mjs)
+    ├── perf/SKILL.md      (+ scripts/perf.mjs)
     ├── feature/SKILL.md
     ├── pair/SKILL.md
     └── lang/SKILL.md
@@ -119,8 +121,10 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
+| `refactor` | 얕은 모듈을 깊게 — 삭제 테스트 판정 · 의존성 분류 · 설계 2회 · 지표 대조 |
 | `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |
 | `ui` | 디자인(피그마·시안) → 값 추출 · 디자인 시스템 매핑 · 렌더 대조 |
+| `perf` | 성능 기준선 측정 → 원인 확정 → 수정 → 재측정 → 예산 고정 (Core Web Vitals) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
 | `lang` | TS·Java 관용구와 함정 |
@@ -134,7 +138,7 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Codex `mcp` 설정에 등록) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`setting` 스킬로 안내) |
-| `browser` · `e2e` · `ui` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `browser` · `e2e` · `ui` · `perf` | `npm i -D @playwright/test` + `npx playwright install chromium` |
 | `ui` (피그마 소스일 때) | Figma MCP 서버. 이미지·스크린샷만 있으면 없어도 된다 |
 | `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 

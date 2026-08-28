@@ -15,8 +15,8 @@ ai-plugins/
     ├── plugins/
     │   └── work/
     │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.8.0)
-    │       ├── commands/                     ← 슬래시 커맨드 21종 (/work:*)
-    │       └── skills/                       ← 스킬 21종
+    │       ├── commands/                     ← 슬래시 커맨드 22종 (/work:*)
+    │       └── skills/                       ← 스킬 22종
     ├── INSTALL.md
     └── README.md             ← 이 문서
 ```
@@ -138,7 +138,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 **플랜 파일(`.claude/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
-### 전체 명령 (21종)
+### 전체 명령 (22종)
 
 | 명령 | 하는 일 |
 |---|---|
@@ -160,12 +160,14 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `/work:explore` | 낯선 코드베이스 정찰 → 수정 지점 국소화 → 정찰 노트 |
 | `/work:debug` | 재현 → 국소화 → 가설 → 최소수정 → 회귀방지 |
 | `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성) |
+| `/work:ui` | 디자인(피그마·시안)에서 값 추출 → 디자인 시스템 매핑 → 구현 → 렌더 값 대조 |
 | `/work:feature` | Jira 없이 요구사항을 구현·테스트·PR까지 |
 | `/work:pair` | AI에게 코드를 맡길 때의 요청·검증 사이클 |
 | `/work:lang` | TS·Java 관용구와 함정 |
 
 슬래시로 부르지 않아도 스킬은 표현을 감지해 자동으로 켜진다 — "PR 올리기 전에 봐줘" → `review`.
 `browser`(일회성 자가검수)와 `e2e`(영속 회귀 테스트)는 목적이 다르다.
+화면 관련 스킬은 축이 셋이다 — `browser`는 **동작하나**, `ui`는 **시안대로 나왔나**, `e2e`는 **다음에도 지켜지나**.
 
 ### 전제 조건
 
@@ -174,7 +176,8 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `ticket` · `plan` · Jira 전이 | **Atlassian MCP 서버** (Rovo) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`/work:setting`으로 안내) |
-| `browser` · `e2e` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `browser` · `e2e` · `ui` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `ui` (피그마 소스일 때) | Figma MCP 서버. 이미지·스크린샷만 있으면 없어도 된다 |
 | `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 
 > **설정은 `/work:setting`으로 잡는다.** 회사 공통값(host·prefix·리뷰어·전이명)은 글로벌 `~/.work/config.json`에 한 번,

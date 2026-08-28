@@ -4,7 +4,7 @@
 Codex CLI/IDE에서 쓸 수 있게 스킬로 포장했다.
 
 Codex는 마켓플레이스가 아니라 **`.agents/skills/` 폴더**에서 스킬을 읽는다.
-여기 `codex/skills/`에 든 21개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
+여기 `codex/skills/`에 든 22개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
 
 ```
 codex/
@@ -27,6 +27,7 @@ codex/
     ├── explore/SKILL.md
     ├── debug/SKILL.md
     ├── browser/SKILL.md   (+ scripts/check.mjs, references/)
+    ├── ui/SKILL.md
     ├── feature/SKILL.md
     ├── pair/SKILL.md
     └── lang/SKILL.md
@@ -73,7 +74,7 @@ cp -R codex/skills/* .agents/skills/
 ### 자동 호출 (implicit)
 
 Codex가 대화 내용을 스킬의 `description`과 매칭해 알아서 켠다.
-"PR 올리기 전에 봐줘" → `review`, "이 페이지 콘솔 에러 있나" → `browser`,
+"PR 올리기 전에 봐줘" → `review`, "이 페이지 콘솔 에러 있나" → `browser`, "시안대로 만들어줘" → `ui`,
 "이거 티켓으로 만들어줘" → `ticket`.
 
 ### 명시 호출 (explicit)
@@ -105,6 +106,7 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `ticket` | 대화 → Jira 티켓 (중복 확인 · 필드 조회) |
 | `plan` | 티켓 → 코드베이스 정찰 → 슬라이스 플랜 파일 |
 | `start` | 슬라이스 실행 (커밋마다 플랜 갱신 · 재개 가능) |
+| `test` | 유닛 테스트 표준 (행위 기준 · 엣지 케이스 도출 · 더블 범위 · 스멜 체크리스트) |
 | `commit` | 원자적 커밋 분할 · 잔여물/시크릿 검사 · Conventional Commits |
 | `review` | 셀프 리뷰 게이트 (기계 검사 → 적대적 diff) |
 | `pr` | 플랜·커밋 → PR 본문 생성 · Jira 연결 |
@@ -118,6 +120,7 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `explore` | 낯선 코드베이스 정찰 · 수정 지점 국소화 |
 | `debug` | 재현 → 국소화 → 최소수정 → 회귀방지 |
 | `browser` | Playwright로 화면 자가검수 (DOM·콘솔·요청, 일회성) |
+| `ui` | 디자인(피그마·시안) → 값 추출 · 디자인 시스템 매핑 · 렌더 대조 |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
 | `lang` | TS·Java 관용구와 함정 |
@@ -131,7 +134,8 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `ticket` · `plan` · Jira 전이 | Atlassian MCP 서버 (Codex `mcp` 설정에 등록) |
 | `pr` (Bitbucket) | Atlassian MCP + `write_bitbucket` 권한 |
 | `pr` (Forgejo) | `FORGEJO_TOKEN`, `FORGEJO_URL` 환경변수 (`setting` 스킬로 안내) |
-| `browser` · `e2e` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `browser` · `e2e` · `ui` | `npm i -D @playwright/test` + `npx playwright install chromium` |
+| `ui` (피그마 소스일 때) | Figma MCP 서버. 이미지·스크린샷만 있으면 없어도 된다 |
 | `migrate` | 프로젝트 마이그레이션 도구 (Prisma / TypeORM / Flyway / Liquibase) |
 
 > **설정은 `setting` 스킬로 잡는다.** 회사 공통값은 글로벌 `~/.work/config.json`, repo 고유값만 프로젝트 `.work/config.json`.

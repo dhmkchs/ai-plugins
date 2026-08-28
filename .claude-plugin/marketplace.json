@@ -9,8 +9,8 @@
     {
       "name": "work",
       "source": "./claude/plugins/work",
-      "description": "개발 작업을 티켓부터 릴리즈까지 끌고 가는 스킬 세트. Jira 티켓 생성 → 작업 플랜 → 슬라이스 실행(구현+유닛 테스트) → 커밋 → 셀프 리뷰 → PR → 정리 → 릴리즈 체인과, 설계(ADR·API 계약)·스키마 마이그레이션·E2E 회귀 테스트·코드베이스 정찰·디버깅·화면 검수 절차를 JavaScript/TypeScript·Java 기준으로 안내합니다.",
-      "version": "0.8.0",
+      "description": "개발 작업을 티켓부터 릴리즈까지 끌고 가는 스킬 세트. Jira 티켓 생성 → 작업 플랜 → 슬라이스 실행(구현+유닛 테스트) → 커밋 → 셀프 리뷰 → PR → 정리 → 릴리즈 체인과, 설계(ADR·API 계약)·스키마 마이그레이션·E2E 회귀 테스트·코드베이스 정찰·디버깅·화면 검수·디자인 충실도 검증 절차를 JavaScript/TypeScript·Java 기준으로 안내합니다.",
+      "version": "0.9.0",
       "author": {
         "name": "choiheesik"
       },
@@ -24,6 +24,8 @@
         "debugging",
         "playwright",
         "e2e",
+        "figma",
+        "design-to-code",
         "adr",
         "api-design",
         "migration",

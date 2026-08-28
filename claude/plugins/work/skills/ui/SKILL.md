@@ -97,48 +97,34 @@ git ls-files | sed -n 's|.*/design-system.*|&|p' | head -20
 **"시안대로 구현했습니다"는 검증이 아니다.** 브라우저에 띄워 실제 값을 뽑아 1단계 표와 대조한다.
 스크린샷을 눈으로 겹쳐 보는 것으로는 8px 어긋남이 안 잡힌다 — 그건 QA에서 잡힌다.
 
-```javascript
-// ui-check.mjs — 시안 대조용. browser 스킬의 check.mjs 와 목적이 다르다(동작 아니라 값)
-import { chromium } from 'playwright';
-
-const [url] = process.argv.slice(2);
-const browser = await chromium.launch();
-// 시안 기준 폭으로 고정한다. 기본 뷰포트(1280×720)에서 재면 전부 다른 값이 나온다
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await page.goto(url, { waitUntil: 'networkidle' });
-
-const targets = [['heading', '사용자 등록'], ['button', '가입']];
-
-for (const [role, name] of targets) {
-  const v = await page.getByRole(role, { name }).evaluate(n => {
-    const s = getComputedStyle(n), r = n.getBoundingClientRect();
-    return {
-      size: `${Math.round(r.width)}×${Math.round(r.height)}`,
-      font: `${s.fontSize}/${s.lineHeight} ${s.fontWeight}`,
-      pad: s.padding, radius: s.borderRadius, bg: s.backgroundColor, color: s.color,
-    };
-  });
-  console.log(role, name, v);
-}
-
-// 간격은 두 요소의 경계로 잰다 — margin 값을 읽는 것보다 정확하다(마진 상쇄가 있다)
-console.log('제목→본문 간격', await page.evaluate(() => {
-  const a = document.querySelector('h1').getBoundingClientRect();
-  const b = document.querySelector('h1 + p').getBoundingClientRect();
-  return Math.round(b.top - a.bottom);
-}));
-
-await page.screenshot({ path: 'ui-1440.png', fullPage: true });
-await browser.close();
-```
-
-폭을 하나만 확인하지 않는다. **최소 두 폭**을 본다.
+`scripts/ui-check.mjs`를 프로젝트에 복사해 실행한다. 준비된 그대로 동작한다.
 
 ```bash
-node ui-check.mjs http://localhost:3000/signup     # 시안 기준폭 (보통 1440)
-# 뷰포트를 1280×800 으로 바꿔 한 번 더 — 작은 노트북에서 첫 화면이 잘리지 않는가
-# 그리고 375×812 — 모바일 시안이 있으면 그것과, 없으면 깨지지 않는지만
+node ui-check.mjs http://localhost:3000/signup targets.json
 ```
+
+`targets.json`에 **1단계에서 추출한 값을 대조 대상으로** 적는다. 없으면 페이지의 주요 요소를 자동으로 잡는다.
+
+```json
+{
+  "widths": [1440, 1280, 375],
+  "elements": [
+    { "role": "heading", "name": "사용자 등록" },
+    { "role": "button",  "name": "가입" }
+  ],
+  "gaps": [ { "from": "h1", "to": "h1 + p", "label": "제목→본문" } ]
+}
+```
+
+폭마다 뽑는 것: 요소 크기·좌표 · 폰트(크기/행간/굵기/패밀리) · 패딩 · radius · 배경/글자/보더 색 ·
+지정한 두 요소 사이 **실측 간격** · **가로 스크롤 발생 여부** · 스크린샷(`ui-<폭>.png`).
+
+- 간격은 margin 값을 읽지 않고 **두 요소의 경계로 잰다** — 마진 상쇄 때문에 CSS 값과 실제가 다르다
+- 웹폰트 로드(`document.fonts.ready`)를 기다린 뒤 잰다. 폰트 적용 전에 재면 크기·줄바꿈이 전부 틀리다
+- **가로 스크롤이 생기거나 대상을 못 찾으면 exit 1** — 그대로 검증 사이클에 끼운다
+
+**폭을 하나만 확인하지 않는다.** 시안 기준폭(보통 1440) · 작은 노트북(1280) · 모바일(375) 최소 셋.
+모바일 시안이 없으면 값 대조는 건너뛰고 **깨지지 않는지만** 본다.
 
 측정값이 1단계 표와 어긋나면 **코드를 고친다.** 표를 고치지 않는다.
 표가 틀렸다고 판단되면 그건 1단계 추출 실패이므로 다시 추출한다.
@@ -189,3 +175,7 @@ node ui-check.mjs http://localhost:3000/signup     # 시안 기준폭 (보통 14
 - 동작 확인은 `browser`, 회귀 자산으로 남길지는 `e2e`가 정한다. 이 스킬의 `ui-check.mjs`는 버리는 것이다.
 - 매핑 예외(8px 이상)와 시안에 없던 상태는 `pr` 본문의 「리뷰 포인트」로 올린다.
 - 시안 자체가 틀렸다고 판단되면 고치지 말고 `ticket`으로 남긴다.
+
+## 참고 파일
+
+- `scripts/ui-check.mjs` — 복사해서 바로 쓰는 시안 대조 스크립트 (폭별 값 추출·실측 간격·오버플로 검사, 검증됨)

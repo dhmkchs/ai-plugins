@@ -13,9 +13,8 @@ ai-plugins/
 └── claude/
     └── plugins/
         └── work/
-            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.8.0)
-            ├── commands/                     ← 슬래시 커맨드 21종
-            └── skills/                       ← 스킬 21종
+            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.11.2)
+            └── skills/                       ← 스킬 24종 (/work:* 로 호출)
 ```
 
 ---

@@ -14,9 +14,8 @@ ai-plugins/
 └── claude/
     ├── plugins/
     │   └── work/
-    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.11.1)
-    │       ├── commands/                     ← 슬래시 커맨드 24종 (/work:*)
-    │       └── skills/                       ← 스킬 24종
+    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.11.2)
+    │       └── skills/                       ← 스킬 24종 (/work:* 로 호출)
     ├── INSTALL.md
     └── README.md             ← 이 문서
 ```
@@ -24,7 +23,7 @@ ai-plugins/
 | 항목 | 값 |
 |---|---|
 | 마켓플레이스 이름 | `dhmkchs` |
-| 플러그인 | `work@dhmkchs` (v0.11.1) |
+| 플러그인 | `work@dhmkchs` (v0.11.2) |
 | 저장소 | `github.com/dhmkchs/ai-plugins` |
 | 대상 스택 | JavaScript / TypeScript, Java (Spring) |
 
@@ -50,7 +49,7 @@ Claude Code 세션 안에서는 슬래시 커맨드로도 같다.
 
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.11.1   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.11.2   Scope: user   Status: enabled
 ```
 
 비공개 저장소면 설치하는 쪽이 저장소 읽기 권한(SSH 키 또는 토큰)을 가지고 있어야 한다.
@@ -221,6 +220,7 @@ claude plugin marketplace remove dhmkchs
 | `marketplace add` 실패 | 저장소 **루트**에 `.claude-plugin/marketplace.json`이 있는지 확인. `claude plugin validate .` |
 | 설치는 됐는데 스킬이 안 보임 | `/reload-plugins`, 그래도 안 되면 세션 재시작 |
 | 스킬이 두 벌 보임 | 같은 스킬을 플러그인 + `~/.claude/skills/` 양쪽에 넣었다. 한쪽을 지운다 |
+| `/work:` 검색에 같은 이름이 두 번 | 스킬(`skills/<name>/SKILL.md`)과 같은 이름의 커맨드(`commands/<name>.md`)를 같이 뒀다. 스킬만 남긴다 (v0.11.2에서 제거) |
 | 폴더를 옮긴 뒤 깨짐 | `marketplace remove` 후 새 경로로 다시 `add` |
 | 팀원만 설치 실패 | 저장소 접근 권한, `marketplace.json`이 커밋됐는지 확인 |
 

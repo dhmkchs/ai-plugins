@@ -159,5 +159,5 @@ claude plugin install work@dhmkchs
 - **브라우저 노이즈** — `skills/browser/scripts/check.mjs`의 `IGNORE` 배열
 - **Jira 필드** — 팀 커스텀 필드가 있으면 `skills/ticket/references/ticket-patterns.md`에 기록
 
-`commands/*.md`는 자동완성에 `/work:` prefix로 뜨게 하는 얇은 래퍼다.
-스킬을 추가하면 여기도 하나 만든다.
+스킬은 `skills/<name>/SKILL.md` 하나로 정의한다. Claude Code가 이걸 그대로 `/work:<name>` 자동완성에
+올려주므로 `commands/*.md` 래퍼는 따로 만들지 않는다 — 만들면 `/work:` 검색에 같은 이름이 두 번 뜬다.

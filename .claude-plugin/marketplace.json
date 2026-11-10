@@ -38,6 +38,22 @@
         "java"
       ],
       "category": "development"
+    },
+    {
+      "name": "fluent-korean-plus",
+      "source": "./claude/plugins/fluent-korean-plus",
+      "description": "snflkd/fluent-korean 1.0.0(MIT)에 작업 보고와 설명 문장을 다루는 조항 11개와 출력 전 점검을 더한 한국어 출력 스타일. 코딩 지침을 유지하는 판과 유지하지 않는 판을 제공합니다.",
+      "version": "1.0.0",
+      "author": {
+        "name": "choiheesik"
+      },
+      "keywords": [
+        "korean",
+        "한국어",
+        "output-style",
+        "fluent-korean"
+      ],
+      "category": "productivity"
     }
   ]
 }

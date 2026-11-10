@@ -1,0 +1,8 @@
+{
+  "name": "fluent-korean-plus",
+  "version": "1.0.0",
+  "description": "snflkd/fluent-korean 1.0.0(MIT)을 바탕으로, 작업 보고와 설명에서 읽기 어려운 문장을 막는 조항을 더한 출력 스타일.",
+  "author": { "name": "choiheesik" },
+  "license": "MIT",
+  "keywords": ["korean", "한국어", "output-style", "fluent-korean"]
+}

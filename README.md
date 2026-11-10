@@ -10,6 +10,7 @@ ai-plugins/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
 │   ├── plugins/work/         · work 플러그인 (커맨드 24 · 스킬 24)
+│   ├── plugins/fluent-korean-plus/ · 한국어 출력 스타일 (snflkd/fluent-korean 기반, MIT)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
@@ -29,6 +30,8 @@ ai-plugins/
 claude plugin marketplace add dhmkchs/ai-plugins
 claude plugin install work@dhmkchs
 ```
+
+한국어 출력 스타일은 `claude plugin install fluent-korean-plus@dhmkchs` 로 설치한 뒤 `/config` 의 output style 에서 `fluent-korean-plus` 를 고른다.
 
 설치하면 `/work:ticket`, `/work:review` 같은 커맨드가 뜨고, 스킬은 표현을 감지해 자동으로 켜진다.
 상세 설치(로컬 경로 · 프로젝트 자동 설정 · Cowork)와 사용법은 [`claude/README.md`](./claude/README.md).

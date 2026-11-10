@@ -9,12 +9,12 @@ ai-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      ← Claude Code 마켓플레이스 카탈로그 (루트)
 ├── claude/                   ← Claude Code 용
-│   ├── plugins/work/         · work 플러그인 (커맨드 24 · 스킬 24)
+│   ├── plugins/work/         · work 플러그인 (스킬 25)
 │   ├── plugins/fluent-korean-plus/ · 한국어 출력 스타일 (snflkd/fluent-korean 기반, MIT)
 │   ├── README.md             · 상세 설치·사용법
 │   └── INSTALL.md
 └── codex/                    ← OpenAI Codex 용
-    ├── skills/               · work 스킬 24종 (.agents/skills 호환)
+    ├── skills/               · work 스킬 25종 (.agents/skills 호환)
     └── README.md             · 상세 설치·사용법
 ```
 
@@ -90,6 +90,7 @@ ticket → plan → start → commit → review → pr → cleanup → release
 | `perf` | 성능 기준선 측정 → 원인 확정 → 수정 → 재측정 → 예산 고정 (Core Web Vitals) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
+| `prompt` | 다른 AI에게 넘길 요청문 작성 (의도·맥락·제약 정리 → 복사 가능한 프롬프트) |
 | `lang` | TS·Java 관용구와 함정 |
 
 대상 스택: JavaScript / TypeScript, Java (Spring). Jira · Bitbucket · Forgejo 연동.

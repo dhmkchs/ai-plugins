@@ -7,6 +7,7 @@ description: >
   says "이거 만들어줘", "구현해줘", "리팩터링해줘", "작업 시작하자", "이 티켓 처리",
   or when AI-generated code needs to be verified before it lands. Prevents unverified
   output, hallucinated APIs, and changes nobody can explain later.
+  다른 AI에게 넘길 요청문(프롬프트 텍스트)만 만드는 일은 `prompt` — 둘은 이어서 쓰일 수 있다.
 ---
 
 # AI Pair Loop

@@ -4,11 +4,12 @@
 Codex CLI/IDE에서 쓸 수 있게 스킬로 포장했다.
 
 Codex는 마켓플레이스가 아니라 **`.agents/skills/` 폴더**에서 스킬을 읽는다.
-여기 `codex/skills/`에 든 24개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
+여기 `codex/skills/`에 든 25개 스킬을 Codex가 스캔하는 위치로 복사하면 된다.
 
 ```
 codex/
 └── skills/
+    ├── prompt/SKILL.md
     ├── setting/SKILL.md
     ├── ticket/SKILL.md
     ├── plan/SKILL.md
@@ -77,7 +78,7 @@ cp -R codex/skills/* .agents/skills/
 
 Codex가 대화 내용을 스킬의 `description`과 매칭해 알아서 켠다.
 "PR 올리기 전에 봐줘" → `review`, "이 페이지 콘솔 에러 있나" → `browser`, "시안대로 만들어줘" → `ui`,
-"이거 티켓으로 만들어줘" → `ticket`.
+"이거 티켓으로 만들어줘" → `ticket`, "Codex에게 시킬 프롬프트 써줘" → `prompt`.
 
 ### 명시 호출 (explicit)
 
@@ -87,6 +88,7 @@ Codex가 대화 내용을 스킬의 `description`과 매칭해 알아서 켠다.
 $review
 $browser
 $ticket 로그인 실패 시 429 응답
+$prompt 로그인 오류를 AI에게 분석시키는 프롬프트 만들어줘
 ```
 
 ### 메인 사슬
@@ -127,6 +129,7 @@ $ticket → $plan → $start → $commit → $review → $pr → $cleanup → $r
 | `perf` | 성능 기준선 측정 → 원인 확정 → 수정 → 재측정 → 예산 고정 (Core Web Vitals) |
 | `feature` | Jira 없이 요구사항 → 구현·테스트·PR |
 | `pair` | AI에게 코드 맡길 때의 요청·검증 사이클 |
+| `prompt` | 다른 AI에게 넘길 요청문 작성 (의도·맥락·제약 정리 → 복사 가능한 프롬프트) |
 | `lang` | TS·Java 관용구와 함정 |
 
 ---

@@ -14,8 +14,8 @@ ai-plugins/
 └── claude/
     ├── plugins/
     │   └── work/
-    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.11.2)
-    │       └── skills/                       ← 스킬 24종 (/work:* 로 호출)
+    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.12.0)
+    │       └── skills/                       ← 스킬 25종 (/work:* 로 호출)
     ├── INSTALL.md
     └── README.md             ← 이 문서
 ```
@@ -23,7 +23,7 @@ ai-plugins/
 | 항목 | 값 |
 |---|---|
 | 마켓플레이스 이름 | `dhmkchs` |
-| 플러그인 | `work@dhmkchs` (v0.11.2) |
+| 플러그인 | `work@dhmkchs` (v0.12.0) |
 | 저장소 | `github.com/dhmkchs/ai-plugins` |
 | 대상 스택 | JavaScript / TypeScript, Java (Spring) |
 
@@ -49,7 +49,7 @@ Claude Code 세션 안에서는 슬래시 커맨드로도 같다.
 
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.11.2   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.12.0   Scope: user   Status: enabled
 ```
 
 비공개 저장소면 설치하는 쪽이 저장소 읽기 권한(SSH 키 또는 토큰)을 가지고 있어야 한다.
@@ -137,7 +137,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 **플랜 파일(`.claude/plans/<TICKET>.md`)이 사슬 전체의 backbone**이다. `/work:status`로 언제든 현재 위치를 확인한다.
 설계·구현 보조 스킬(`adr`·`api`·`migrate`·`e2e`)은 사슬 옆에서 필요할 때 끼어든다.
 
-### 전체 명령 (24종)
+### 전체 명령 (25종)
 
 | 명령 | 하는 일 |
 |---|---|
@@ -164,6 +164,7 @@ cd claude/plugins/work && zip -r ../../../work.plugin . -x "*.DS_Store"
 | `/work:perf` | 스로틀 고정 기준선 측정 → 원인 확정(커버리지·시프트 범인) → 수정 → 재측정 → 예산 |
 | `/work:feature` | Jira 없이 요구사항을 구현·테스트·PR까지 |
 | `/work:pair` | AI에게 코드를 맡길 때의 요청·검증 사이클 |
+| `/work:prompt` | 다른 AI에게 넘길 요청문 작성. 의도·맥락·제약 정리 → 핵심 누락만 질문 → 복사 가능한 프롬프트 |
 | `/work:lang` | TS·Java 관용구와 함정 |
 
 슬래시로 부르지 않아도 스킬은 표현을 감지해 자동으로 켜진다 — "PR 올리기 전에 봐줘" → `review`.

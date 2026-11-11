@@ -1,7 +1,7 @@
 ---
 name: cleanup
 description: >
-  머지된 작업을 마무리한다 — 브랜치·worktree 정리, 플랜 닫기, Jira 상태 전이, 후속 티켓 생성.
+  머지된 작업을 마무리한다 — 브랜치·worktree·화면 스냅샷 정리, 플랜 닫기, Jira 상태 전이, 후속 티켓 생성.
   Use after a PR is merged or a task is abandoned — "PR 머지됐어", "작업 끝났어", "정리해줘",
   "브랜치 정리", "마무리", "이 티켓 닫아줘", "다 끝났으니 치워줘" — or when `status` reports
   stale branches and plans that never got closed. Never deletes unmerged work.
@@ -63,9 +63,37 @@ git worktree remove ../repo-PROJ-123
 git worktree prune
 
 # 브랜치 config는 브랜치와 함께 사라진다 — 별도 정리 불필요
+
+# 변경 화면 스냅샷 (start 가 만든 것) — 머지됐으면 더는 볼 일이 없다
+du -sh .agents/snapshots/"$TICKET" 2>/dev/null && rm -rf .agents/snapshots/"$TICKET"
 ```
 
 원격 브랜치가 이미 없으면 오류가 나는데, 이건 실패가 아니다. 그렇게 보고한다.
+
+### 스냅샷은 여기서 지운다
+
+`start`가 만든 변경 화면 보고서(`.agents/snapshots/<TICKET>/`)는 **PR 리뷰가 끝날 때까지만** 쓸모 있다.
+커밋되지 않는 로컬 파일이고 필요하면 다시 찍을 수 있어서, 머지가 확인되면 브랜치 정리와 함께 지운다.
+작업을 포기하는 경우도 브랜치 삭제 승인과 함께 지운다.
+
+**이전 정리에서 빠진 스냅샷도 함께 쓸어낸다.** 티켓별 디렉터리마다 플랜을 보고 판정한다.
+
+| 그 티켓 플랜 | 처리 |
+|---|---|
+| `status: done` 이거나 플랜이 `done/` 으로 옮겨짐 | 삭제 |
+| 플랜 파일이 없음 | 목록을 보여주고 승인받아 삭제 (다른 경로로 만든 것일 수 있다) |
+| 그 외 (`in-progress`·`review`·`pr-open`·`blocked`) | **남긴다** — 아직 보고서를 볼 수 있다 |
+
+```bash
+# 삭제 대상(완료된 티켓) 출력. 플랜이 없는 것은 "?" 로 따로 표시
+for d in .agents/snapshots/*/; do
+  t=$(basename "$d")
+  if [ -f ".agents/plans/done/$t.md" ] || grep -qs '^status: done' ".agents/plans/$t.md"; then echo "done $t"
+  elif [ ! -f ".agents/plans/$t.md" ]; then echo "?    $t"; fi
+done
+```
+
+`.agents/snap.mjs`(스크립트 사본)는 지우지 않는다. 다음 티켓에서 다시 쓴다.
 
 ## 4. 플랜 닫기
 
@@ -122,6 +150,7 @@ transitionJiraIssue           Done 계열로. 승인받고 실행
 - 머지 확인: origin/main 에 반영됨 (squash, a1b2c3d)
 - 로컬 브랜치 삭제 ✓ / 원격 브랜치 이미 삭제됨
 - worktree 없음
+- 스냅샷: .agents/snapshots/PROJ-123 삭제 (4.2MB) + 이전 완료분 2건 정리
 - 플랜: status=done, .agents/plans/PROJ-123.md 유지
 - Jira: In Review → Done ✓
 - 후속 티켓 2건 생성: PROJ-141, PROJ-142

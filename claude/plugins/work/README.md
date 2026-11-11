@@ -57,7 +57,7 @@
 | `/work:e2e` | 브랜치에서 바뀐 코드로 Playwright 회귀 테스트 생성·실행·커밋 |
 | `/work:explore` | 낯선 코드베이스 정찰 → 수정 지점 국소화 → 정찰 노트 |
 | `/work:debug` | 재현 → 국소화 → 가설 → 최소수정 → 회귀방지 |
-| `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성) |
+| `/work:browser` | Playwright로 aria 스냅샷·콘솔 에러·실패 요청을 텍스트로 뽑아 판정 (일회성). 작업 전/후 변경 화면 보고서(픽셀 차이·구조 diff) |
 | `/work:feature` | Jira 없이 요구사항을 구현·테스트·PR까지 |
 | `/work:pair` | AI에게 코드를 맡길 때의 요청·검증 사이클 |
 | `/work:prompt` | 다른 AI에게 넘길 요청문 작성. 의도·맥락·제약 정리 → 핵심 누락만 질문 → 복사 가능한 프롬프트 |

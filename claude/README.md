@@ -14,7 +14,7 @@ ai-plugins/
 └── claude/
     ├── plugins/
     │   └── work/
-    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.12.0)
+    │       ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.13.0)
     │       └── skills/                       ← 스킬 25종 (/work:* 로 호출)
     ├── INSTALL.md
     └── README.md             ← 이 문서
@@ -23,7 +23,7 @@ ai-plugins/
 | 항목 | 값 |
 |---|---|
 | 마켓플레이스 이름 | `dhmkchs` |
-| 플러그인 | `work@dhmkchs` (v0.12.0) |
+| 플러그인 | `work@dhmkchs` (v0.13.0) |
 | 저장소 | `github.com/dhmkchs/ai-plugins` |
 | 대상 스택 | JavaScript / TypeScript, Java (Spring) |
 
@@ -49,7 +49,7 @@ Claude Code 세션 안에서는 슬래시 커맨드로도 같다.
 
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.12.0   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.13.0   Scope: user   Status: enabled
 ```
 
 비공개 저장소면 설치하는 쪽이 저장소 읽기 권한(SSH 키 또는 토큰)을 가지고 있어야 한다.

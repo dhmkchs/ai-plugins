@@ -21,6 +21,7 @@ plan_version: 1
 created: 2026-08-03
 updated: 2026-08-03
 pr: null
+screens: []          # 화면 변경 티켓이면: [http://localhost:3000/signup, http://localhost:3000/login]
 ---
 
 ## 요구사항
@@ -106,6 +107,7 @@ pr: null
 | `plan_version` | 재계획 시 증가 | plan |
 | `created` / `updated` | 날짜 | 각 갱신 시 |
 | `pr` | PR URL (없으면 `null`) | pr |
+| `screens` | 변경 화면 보고서 대상 URL 목록 (화면 변경 없으면 `[]`) | plan (start가 보강 가능) |
 
 ## 상태 전이
 

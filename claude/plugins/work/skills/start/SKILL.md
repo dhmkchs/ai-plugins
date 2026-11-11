@@ -73,6 +73,25 @@ git config -f ../repo-PROJ-124/.git/config branch.feature/PROJ-124-x.base main
 플랜 파일은 `.claude/plans/`에 티켓별로 있으므로 그대로 쓰면 된다.
 끝나면 `git worktree remove ../repo-PROJ-124`.
 
+### 화면 기준선(before)을 찍는다 — 화면이 바뀌는 티켓이면
+
+플랜 `screens`가 비어 있지 않으면 **첫 슬라이스 전에** 지금 화면을 찍어둔다.
+작업 트리가 깨끗한 지금이 base 그대로의 화면을 공짜로 얻는 유일한 순간이다.
+이걸 놓치면 완료 후 "어디가 바뀌었나"를 보여주려고 base를 따로 띄워야 한다.
+
+```bash
+# 처음 한 번: browser 스킬의 scripts/snap.mjs 를 .claude/snap.mjs 로 복사
+echo ".claude/snapshots/" >> .git/info/exclude                  # 스냅샷은 커밋하지 않는다
+node .claude/snap.mjs capture before <screens...> --out .claude/snapshots/PROJ-123
+```
+
+- 개발 서버가 안 떠 있으면 플랜 정찰 노트의 `run` 명령으로 띄운다. 못 띄우면 건너뛰고 로그에 남긴다 — 이것 때문에 작업을 막지 않는다
+- 매번 달라지는 영역(시계·랜덤 배너·광고)은 `--mask "<css>"`로 가린다. 안 가리면 그 부분이 매번 "변경"으로 잡힌다
+- `screens`가 비었는데 슬라이스에 화면 작업이 보이면, 대상 URL을 사용자에게 확인받아 `screens`를 채우고 찍는다
+- 플랜 `## 로그`에 한 줄: `- 2026-08-03 화면 기준선 3장 캡처 (.claude/snapshots/PROJ-123/before)`
+
+세부(로그인 화면·모바일·before를 놓쳤을 때)는 `browser` 스킬의 「변경 화면 보고서」.
+
 플랜의 `branch`·`status`를 갱신하고, **Jira 상태 전이를 승인받는다.**
 
 ```
@@ -174,14 +193,46 @@ transitionJiraIssue           승인 후 실행
   이름만 적혀 있고 테스트가 없으면 그 요구사항은 아직 충족된 게 아니다
 - 전체 테스트를 한 번 더 돌려 기준선과 비교한다. 신규 테스트 수를 센다
 - skip·only·주석 처리한 테스트가 남아 있는지 훑는다. 남겼으면 이유와 티켓 번호가 붙어 있어야 한다
+- **화면이 바뀌었으면 변경 화면 보고서를 만든다** — 아래
 - `status: review`로 갱신
 - 다음 단계를 안내한다
+
+### 변경 화면 보고서
+
+사용자는 코드 diff로 화면 변화를 상상할 수 없다. **바뀐 화면을 직접 보여주는 것까지가 완료다.**
+
+```bash
+node .claude/snap.mjs capture after <screens...> --out .claude/snapshots/PROJ-123   # before와 같은 옵션으로
+node .claude/snap.mjs report --out .claude/snapshots/PROJ-123
+open .claude/snapshots/PROJ-123/report.html       # macOS. Linux는 xdg-open
+```
+
+`report`는 화면마다 세 가지를 낸다.
+
+| 산출 | 보여주는 것 |
+|---|---|
+| `report.html` | 전/후 **슬라이더** · 나란히 · 차이 보기 탭. 사용자가 여는 것은 이것 하나 |
+| `diff/<화면>.png` | 바뀐 픽셀을 빨강으로, 바뀐 영역을 번호 박스로 표시 |
+| 터미널 요약 | 화면별 변경률·영역 좌표·**구조(aria) 변화** — 무엇이 생기고 사라졌는지 텍스트로 |
+
+**보고는 터미널 요약을 그대로 붙이고, 해석을 한 줄씩 단다.** 이미지 경로만 던지지 않는다.
+의도하지 않은 변화(안 건드린 화면이 바뀜, 예상보다 넓은 영역)가 보이면 **완료 처리하지 않고** 원인부터 본다 —
+공통 컴포넌트·전역 CSS가 번진 것일 가능성이 크다.
+
+스냅샷은 PR 리뷰 동안 남겨 두고, 머지 후 `cleanup`이 지운다. 여기서 지우지 않는다.
+
+before를 찍지 못했으면 base를 worktree로 띄워 찍는다 (`browser` 스킬 「변경 화면 보고서」).
+그것도 안 되면 after만 찍어 `report`를 돌린다 — 차이는 없지만 "지금 이렇게 생겼다"는 보여줄 수 있다.
 
 ```
 PROJ-123 슬라이스 4/4 완료 — 커밋 4개
 요구사항 6/6 충족, 테스트 148 passed / 0 failed (기준선 142 → 신규 6건)
   유닛 5 (정규화·중복·경계 3) + 통합 1 (409 응답)
   S4는 유닛 테스트 없음 — 마이그레이션, 적용/롤백으로 검증 (로그 기록됨)
+변경 화면 2/3 (보고서: .claude/snapshots/PROJ-123/report.html)
+  ■ signup   픽셀 4.1%, 영역 2 — [1] 이메일 아래 에러 문구 추가, [2] 버튼 "가입"→"가입하기"
+  ■ login    픽셀 0.8%, 영역 1 — 공통 Button 변경이 번짐 (의도됨, 플랜 S3)
+  □ home     변화 없음
 다음: /work:review
 ```
 
@@ -202,8 +253,11 @@ PROJ-123 슬라이스 4/4 완료 — 커밋 4개
 | 계획과 달라졌는데 플랜 방치 | 플랜이 거짓말이 되고 PR 설명도 틀어진다 |
 | Jira 전이 이름 추측 | 전이 실패, 또는 엉뚱한 상태로 이동 |
 | 승인 없이 마이그레이션 실행 | 되돌릴 수 없다 |
+| 화면 작업인데 before 없이 착수 | 끝나고 무엇이 바뀌었는지 보여줄 기준이 없다 |
+| 보고서 경로만 던지고 끝 | 사용자가 열어 봐야 알고, 의도치 않은 변화를 아무도 짚지 않는다 |
 
 ## 참고 파일
 
 - `references/execution-rules.md` — 브랜치·커밋 규칙, 슬라이스별 테스트 실행, 중단·재개, 슬라이스 실패 대응
 - `test` 스킬 — 유닛 테스트 표준 (행위 기준 단정·엣지 케이스 도출·더블 범위·스멜 체크리스트)
+- `browser` 스킬 `scripts/snap.mjs` — 변경 화면 보고서 (전/후 캡처·픽셀 차이·구조 diff)

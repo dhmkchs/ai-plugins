@@ -106,6 +106,8 @@ git stash && ./gradlew test ; git stash pop
 ```
 
 화면이 바뀌는 슬라이스는 `browser`를 돌린다. 코드만 봐서는 렌더링·콘솔 에러를 알 수 없다.
+슬라이스마다 전/후를 찍지는 않는다 — 변경 화면 보고서는 착수 전 before 1회, 완료 시 after 1회다.
+중간에 보고 싶으면 `capture after` + `report`를 언제든 돌려도 된다 (after는 덮어쓴다).
 
 ## 중단과 재개
 

@@ -5,9 +5,10 @@ description: >
   Use right after implementing or changing anything that renders in a browser — a page,
   component, form, or API the frontend consumes — or when the user says "화면 확인해줘",
   "잘 나오는지 봐줘", "동작하나 확인", "브라우저로 띄워봐", "스크린샷 찍어줘",
-  "콘솔 에러 있나", "playwright", "E2E", "렌더링 확인", "이 페이지 깨졌어".
+  "콘솔 에러 있나", "playwright", "E2E", "렌더링 확인", "이 페이지 깨졌어",
+  "뭐가 바뀌었는지 보여줘", "변경 전후 비교", "화면 diff".
   Captures DOM structure, console errors, and failed requests as text before resorting
-  to screenshots.
+  to screenshots, and builds a before/after visual diff report of changed screens.
 ---
 
 # Browser Check
@@ -88,6 +89,49 @@ API 모킹, 다크모드, 느린 네트워크 재현.
 **"괜찮아 보입니다"로 끝내지 않는다.** 무엇을 확인했고 무엇을 확인하지 않았는지 쓴다.
 콘솔 에러가 있으면 이 변경 때문인지 기존 것인지 구분한다 — 구분하려면 변경 전 상태에서 한 번 더 돌린다.
 
+## 변경 화면 보고서 — "어디가 바뀌었나"
+
+`check.mjs`는 **지금 동작하나**를 본다. 작업이 끝난 뒤 사용자가 묻는 건 **무엇이 달라졌나**다.
+그건 `scripts/snap.mjs`로 전/후를 찍어 비교한다. `start`가 착수 시 before, 완료 시 after+report를 돌린다.
+
+```bash
+node snap.mjs capture before http://localhost:3000/signup http://localhost:3000/login --out .claude/snapshots/PROJ-123
+# … 구현 …
+node snap.mjs capture after  http://localhost:3000/signup http://localhost:3000/login --out .claude/snapshots/PROJ-123
+node snap.mjs report --out .claude/snapshots/PROJ-123
+```
+
+판정을 두 겹으로 낸다. 어느 한쪽만으로는 오판한다.
+
+- **픽셀 차이** — 바뀐 픽셀을 빨강, 바뀐 영역을 번호 박스로. 색·간격·크기 변화를 잡는다
+  - 요소가 하나 끼어들면 그 아래가 밀려 **전부 바뀐 것**으로 잡힌다. 넓은 영역 = 큰 변경이 아니다
+- **구조(aria) diff** — 생기거나 사라진 요소를 텍스트로. 밀림에 속지 않고 "버튼 문구가 바뀌었다"를 정확히 짚는다
+  - 순수 스타일 변경은 여기 안 잡힌다. 그래서 픽셀과 함께 본다
+
+옵션:
+
+| 옵션 | 언제 |
+|---|---|
+| `--mask "<css>,<css>"` | 시계·랜덤 배너·광고처럼 매번 달라지는 영역. 안 가리면 매번 "변경"으로 잡힌다 |
+| `--mobile` | 모바일 뷰포트. before/after는 **같은 옵션으로** 찍어야 짝이 맞는다 (파일명에 `@mobile`) |
+| `--storage auth.json` | 로그인이 필요한 화면. `references/recipes.md`의 로그인 상태 저장으로 만든 파일 |
+
+**before를 놓쳤으면** base를 별도 worktree로 띄워 찍는다. 현재 브랜치를 갈아타지 않는다.
+
+```bash
+git worktree add ../repo-base "$(git config branch.$(git branch --show-current).base || echo main)"
+# ../repo-base 에서 의존성 설치 후 다른 포트로 개발 서버 실행 (예: PORT=3100)
+node snap.mjs capture before http://localhost:3100/signup --out .claude/snapshots/PROJ-123
+git worktree remove ../repo-base
+```
+
+URL의 경로·쿼리가 같아야 before/after가 짝지어진다 — 포트는 달라도 된다.
+그것도 안 되면 after만 찍어 `report`를 돌린다. 차이는 없지만 현재 화면과 구조는 보인다.
+
+스냅샷은 **커밋하지 않는다** (`.claude/snapshots/`를 `.git/info/exclude`에). 바이너리가 쌓이고 리뷰 diff를 오염시킨다.
+티켓 단위로 머지 후 `cleanup`이 지운다. 티켓 없이 찍은 것(`--out` 생략 시 `.claude/snapshots/current`)은 확인이 끝나면 바로 지운다.
+회귀 기준으로 남겨야 할 화면이면 그건 `e2e`의 `toHaveScreenshot`이 할 일이다.
+
 ## 언제 테스트로 승격하나
 
 자가검수 스크립트는 원칙적으로 **버리는 것**이다. 남길 기준은 하나뿐이다.
@@ -141,5 +185,6 @@ API 가용성은 아래에서 확인한다 — **문서가 이 문서보다 항�
 ## 참고 파일
 
 - `scripts/check.mjs` — 복사해서 바로 쓰는 자가검수 스크립트 (검증됨)
+- `scripts/snap.mjs` — 변경 화면 보고서: 전/후 캡처 · 픽셀 차이 · 구조 diff · `report.html` (playwright 외 의존성 없음)
 - `references/recipes.md` — 상황별 스크립트 조각
 - `references/troubleshooting.md` — 실행 실패와 오진단 원인

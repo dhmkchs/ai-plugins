@@ -13,7 +13,7 @@ ai-plugins/
 └── claude/
     └── plugins/
         └── work/
-            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.12.0)
+            ├── .claude-plugin/plugin.json   ← 플러그인 정의 (work, v0.13.0)
             └── skills/                       ← 스킬 25종 (/work:* 로 호출)
 ```
 
@@ -37,7 +37,7 @@ claude plugin install work@dhmkchs
 확인:
 ```bash
 claude plugin list
-# > work@dhmkchs   Version: 0.12.0   Scope: user   Status: enabled
+# > work@dhmkchs   Version: 0.13.0   Scope: user   Status: enabled
 ```
 
 스킬은 `work:ticket`, `work:review`처럼 `work:` 네임스페이스로 등록된다.

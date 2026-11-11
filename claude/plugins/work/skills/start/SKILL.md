@@ -35,6 +35,27 @@ front-matter의 `status`로 분기한다.
 | `pr-open` | 이미 PR 있음 → PR 링크 보여주고 추가 작업인지 확인 |
 | `blocked` | `## 로그`의 사유를 보여주고, 해소됐는지 확인 후 진행 |
 
+### 화면 작업 판정 — 매 실행마다 (첫 실행·재개 모두)
+
+**플랜의 `screens`만 믿지 않는다.** 0.13 이전 플랜에는 필드가 없고, plan 단계에서 빠뜨리기도 한다.
+`screens`가 비어 있으면 아무것도 안 찍히고, 사용자는 끝날 때까지 화면을 한 장도 못 본다.
+
+```bash
+BASE=$(git config branch.$(git branch --show-current).base 2>/dev/null || echo main)
+UI='\.(tsx|jsx|vue|svelte|astro|css|scss|sass|less|html|hbs|ejs|jsp|thymeleaf)$|/(pages|views|components|templates|layouts|app)/'
+{ git diff --name-only "$BASE"...HEAD 2>/dev/null; git diff --name-only; } | grep -E "$UI"   # 이미 바뀐 화면 파일
+grep -E '^\s*대상:' .claude/plans/<TICKET>.md | tr ',' '\n' | grep -E "$UI"                 # 슬라이스 대상 파일
+```
+
+| 상황 | 동작 |
+|---|---|
+| `screens` 있음 | 그대로 쓴다 |
+| `screens` 비었는데 위 검사에 걸림 | 정찰 노트의 라우트에서 후보 URL을 뽑아 **사용자에게 확인받고** `screens`를 채운다 |
+| 둘 다 없음 | 화면 작업 아님. 보고서 생략 — 로그에 남길 필요 없다 |
+
+`screens`가 정해졌으면 **before가 있는지 본다** (`.claude/snapshots/<TICKET>/before/*.png`).
+없으면 지금 찍는다 — 아래 「화면 기준선(before)」. 재개 중이라 이미 코드가 바뀌었어도 마찬가지다 (base worktree로 찍는다).
+
 ## 2. 착수 준비 (첫 실행일 때만)
 
 **작업 트리가 깨끗한지 먼저 확인한다.** 커밋 안 된 변경이 있으면 멈추고 사용자에게 처리를 묻는다.
@@ -73,21 +94,30 @@ git config -f ../repo-PROJ-124/.git/config branch.feature/PROJ-124-x.base main
 플랜 파일은 `.claude/plans/`에 티켓별로 있으므로 그대로 쓰면 된다.
 끝나면 `git worktree remove ../repo-PROJ-124`.
 
-### 화면 기준선(before)을 찍는다 — 화면이 바뀌는 티켓이면
+### 화면 기준선(before)을 찍는다 — 화면 작업 판정에서 `screens`가 정해졌으면
 
-플랜 `screens`가 비어 있지 않으면 **첫 슬라이스 전에** 지금 화면을 찍어둔다.
+**첫 슬라이스 전에** 지금 화면을 찍어둔다.
 작업 트리가 깨끗한 지금이 base 그대로의 화면을 공짜로 얻는 유일한 순간이다.
-이걸 놓치면 완료 후 "어디가 바뀌었나"를 보여주려고 base를 따로 띄워야 한다.
 
 ```bash
 # 처음 한 번: browser 스킬의 scripts/snap.mjs 를 .claude/snap.mjs 로 복사
-echo ".claude/snapshots/" >> .git/info/exclude                  # 스냅샷은 커밋하지 않는다
+grep -qx ".claude/snapshots/" .git/info/exclude || echo ".claude/snapshots/" >> .git/info/exclude   # 커밋하지 않는다
 node .claude/snap.mjs capture before <screens...> --out .claude/snapshots/PROJ-123
 ```
 
-- 개발 서버가 안 떠 있으면 플랜 정찰 노트의 `run` 명령으로 띄운다. 못 띄우면 건너뛰고 로그에 남긴다 — 이것 때문에 작업을 막지 않는다
+**재개 중이라 이미 커밋이 있으면** 지금 화면은 before가 아니다. base를 worktree로 띄워 찍는다.
+현재 브랜치를 갈아타거나 stash하지 않는다.
+
+```bash
+git worktree add /tmp/PROJ-123-base "$BASE"
+# /tmp/PROJ-123-base 에서 의존성 설치 후 다른 포트로 서버 실행 (예: PORT=3100), 경로는 screens와 같게
+node .claude/snap.mjs capture before http://localhost:3100/signup ... --out .claude/snapshots/PROJ-123
+git worktree remove /tmp/PROJ-123-base
+```
+
+- 개발 서버가 안 떠 있으면 플랜 정찰 노트의 `run` 명령으로 띄운다. 못 띄우면 사용자에게 알리고 로그에 남긴 뒤 진행한다 — 이것 때문에 작업을 막지 않는다. **조용히 건너뛰지 않는다**
 - 매번 달라지는 영역(시계·랜덤 배너·광고)은 `--mask "<css>"`로 가린다. 안 가리면 그 부분이 매번 "변경"으로 잡힌다
-- `screens`가 비었는데 슬라이스에 화면 작업이 보이면, 대상 URL을 사용자에게 확인받아 `screens`를 채우고 찍는다
+- 찍은 before 중 대표 1장을 Read로 열어 제대로 찍혔는지(로그인 리다이렉트·빈 화면·에러 페이지가 아닌지) 본다
 - 플랜 `## 로그`에 한 줄: `- 2026-08-03 화면 기준선 3장 캡처 (.claude/snapshots/PROJ-123/before)`
 
 세부(로그인 화면·모바일·before를 놓쳤을 때)는 `browser` 스킬의 「변경 화면 보고서」.
@@ -114,7 +144,7 @@ transitionJiraIssue           승인 후 실행
 3. **유닛 테스트** — 이 슬라이스가 만든 행위를 테스트로 박제한다. 절차는 `test` 스킬 — 아래 「슬라이스마다 유닛 테스트」
    - 버그 수정 슬라이스면 **테스트가 먼저다.** 수정 전에 돌려서 버그 때문에 실패하는 걸 본다
 4. **검증** — 슬라이스의 완료 조건 명령을 **실제로 실행한다.** 통과를 눈으로 확인한다
-   - 화면이 바뀌면 `browser`
+   - 화면이 바뀌면 `browser` + **중간 스냅샷** — 아래 「화면 슬라이스는 찍어서 보여준다」
    - 테스트 전체를 돌려 기준선과 비교한다 (새로 깨진 게 없어야 한다)
 5. **커밋** — 슬라이스 하나 = 커밋 하나. **구현과 그 테스트는 같은 커밋**이다
    ```bash
@@ -122,7 +152,28 @@ transitionJiraIssue           승인 후 실행
    ```
    커밋 메시지에 티켓 키를 넣는다. Bitbucket은 이걸로 Jira와 자동 연결된다
 6. **플랜 갱신** — 체크박스 `[x]`, 커밋 해시 기록, 요구사항 표 상태, `## 로그` 한 줄. **즉시**
-7. **보고 후 다음** — 무엇이 끝났고 다음이 뭔지 한 줄
+7. **보고 후 다음** — 무엇이 끝났고 다음이 뭔지 한 줄. 화면 슬라이스면 스냅샷 줄을 붙인다
+
+### 화면 슬라이스는 찍어서 보여준다
+
+`screens`가 있는 티켓에서 이 슬라이스가 화면 파일을 건드렸으면(§1의 `$UI` 패턴), 커밋 전에:
+
+```bash
+node .claude/snap.mjs capture after <이 슬라이스가 그리는 screens...> --out .claude/snapshots/PROJ-123   # before와 같은 옵션
+node .claude/snap.mjs report --out .claude/snapshots/PROJ-123
+```
+
+1. **after PNG와 `diff/<화면>.png`를 Read로 직접 본다.** 터미널 요약(aria diff)만 보고 해석을 지어내지 않는다
+2. 보이는 것이 슬라이스 의도와 맞는지 판정한다. 안 맞으면 이 슬라이스는 아직 완료가 아니다
+3. 보고에 화면별 한 줄 — 경로 + **눈으로 확인한 내용**
+
+```
+S2 완료 (a1b2c3d) — 가입 폼 에러 문구
+  📷 signup  .claude/snapshots/PROJ-123/diff/signup.png — 이메일 입력 아래 빨간 에러 문구 1줄 추가, 나머지 동일
+다음: S3 버튼 공통 컴포넌트
+```
+
+after는 덮어쓰므로 슬라이스마다 찍어도 쌓이지 않는다. 마지막 슬라이스의 after가 곧 완료 보고서의 after다.
 
 ### 슬라이스마다 유닛 테스트
 
@@ -193,7 +244,8 @@ transitionJiraIssue           승인 후 실행
   이름만 적혀 있고 테스트가 없으면 그 요구사항은 아직 충족된 게 아니다
 - 전체 테스트를 한 번 더 돌려 기준선과 비교한다. 신규 테스트 수를 센다
 - skip·only·주석 처리한 테스트가 남아 있는지 훑는다. 남겼으면 이유와 티켓 번호가 붙어 있어야 한다
-- **화면이 바뀌었으면 변경 화면 보고서를 만든다** — 아래
+- **화면 게이트** — §1 화면 작업 판정을 한 번 더 돌린다 (`$BASE...HEAD` 전체 diff 기준).
+  걸리면 `report.html`이 있어야 하고, **없으면 `status: review`로 넘기지 않는다** — 아래 보고서를 만든다
 - `status: review`로 갱신
 - 다음 단계를 안내한다
 
@@ -215,7 +267,11 @@ open .claude/snapshots/PROJ-123/report.html       # macOS. Linux는 xdg-open
 | `diff/<화면>.png` | 바뀐 픽셀을 빨강으로, 바뀐 영역을 번호 박스로 표시 |
 | 터미널 요약 | 화면별 변경률·영역 좌표·**구조(aria) 변화** — 무엇이 생기고 사라졌는지 텍스트로 |
 
-**보고는 터미널 요약을 그대로 붙이고, 해석을 한 줄씩 단다.** 이미지 경로만 던지지 않는다.
+**보고 전에 화면마다 `diff/<화면>.png`를 Read로 직접 본다.** 변화가 있는 화면은 after PNG도 본다.
+aria 요약만으로 "에러 문구 추가" 같은 해석을 쓰면 추측이다 — 순수 스타일 변경·밀림은 aria에 안 잡힌다.
+
+**보고는 터미널 요약을 그대로 붙이고, 눈으로 확인한 해석을 한 줄씩 단다.** 이미지 경로만 던지지 않는다.
+`open`은 사용자 편의일 뿐이다. 터미널에는 이미지가 안 보이므로 보고 텍스트만으로 무엇이 바뀌었는지 알 수 있어야 한다.
 의도하지 않은 변화(안 건드린 화면이 바뀜, 예상보다 넓은 영역)가 보이면 **완료 처리하지 않고** 원인부터 본다 —
 공통 컴포넌트·전역 CSS가 번진 것일 가능성이 크다.
 
@@ -254,6 +310,10 @@ PROJ-123 슬라이스 4/4 완료 — 커밋 4개
 | Jira 전이 이름 추측 | 전이 실패, 또는 엉뚱한 상태로 이동 |
 | 승인 없이 마이그레이션 실행 | 되돌릴 수 없다 |
 | 화면 작업인데 before 없이 착수 | 끝나고 무엇이 바뀌었는지 보여줄 기준이 없다 |
+| `screens`가 비었다고 화면 판정 생략 | 옛 플랜·누락된 플랜에서 스냅샷이 한 장도 안 나온다 |
+| 재개할 때 before 확인 생략 | §2를 안 타서 before가 영영 없다 |
+| 화면 슬라이스를 텍스트로만 보고 | 사용자는 끝날 때까지 화면을 못 보고, 틀린 화면이 다음 슬라이스의 토대가 된다 |
+| 이미지를 안 보고 aria 요약으로 해석 | 스타일·밀림 변화를 놓치고 해석이 추측이 된다 |
 | 보고서 경로만 던지고 끝 | 사용자가 열어 봐야 알고, 의도치 않은 변화를 아무도 짚지 않는다 |
 
 ## 참고 파일

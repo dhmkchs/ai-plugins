@@ -92,7 +92,7 @@ API 모킹, 다크모드, 느린 네트워크 재현.
 ## 변경 화면 보고서 — "어디가 바뀌었나"
 
 `check.mjs`는 **지금 동작하나**를 본다. 작업이 끝난 뒤 사용자가 묻는 건 **무엇이 달라졌나**다.
-그건 `scripts/snap.mjs`로 전/후를 찍어 비교한다. `start`가 착수 시 before, 완료 시 after+report를 돌린다.
+그건 `scripts/snap.mjs`로 전/후를 찍어 비교한다. `start`가 착수 시(재개 때도 없으면) before, 화면 슬라이스마다와 완료 시 after+report를 돌리고 diff PNG를 직접 본 뒤 보고한다.
 
 ```bash
 node snap.mjs capture before http://localhost:3000/signup http://localhost:3000/login --out .claude/snapshots/PROJ-123
